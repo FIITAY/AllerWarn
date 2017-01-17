@@ -14,14 +14,6 @@ public class MainScreenFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_main_screen, container, false);
-        TextView tvVersionNum = (TextView) v.findViewById(R.id.tvVersionCode);
-        try {
-            String s = getActivity().getApplicationContext().getPackageManager().getPackageInfo(getActivity().getApplicationContext()
-                    .getPackageName(), 0).versionName;
-            tvVersionNum.setText(s);
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
         return v;
     }
 }

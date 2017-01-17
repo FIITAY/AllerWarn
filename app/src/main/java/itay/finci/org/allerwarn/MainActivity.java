@@ -1,7 +1,11 @@
 package itay.finci.org.allerwarn;
 
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -10,11 +14,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
-
-
+        implements NavigationView.OnNavigationItemSelectedListener ,FragmentChangeListener{
+    TextView tvVersion;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,6 +34,9 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        View header=navigationView.getHeaderView(0);
+        tvVersion= (TextView)header.findViewById(R.id.tvVersion);
+        setVersionCodeInTV();
 
         if(findViewById(R.id.fragment_cointainer) != null){
 
@@ -40,6 +47,16 @@ public class MainActivity extends AppCompatActivity
             MainScreenFragment msf = new MainScreenFragment();
 
             getSupportFragmentManager().beginTransaction().add(R.id.fragment_cointainer, msf, null).commit();
+        }
+    }
+
+    private void setVersionCodeInTV() {
+        try {
+            String s = getApplicationContext().getPackageManager().getPackageInfo(getApplicationContext()
+                    .getPackageName(), 0).versionName;
+            tvVersion.setText(s);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
         }
     }
 
@@ -83,23 +100,21 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.nav_newUser) {
             NewUserFragment nuf = new NewUserFragment();
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_cointainer, nuf, null).commit();
+            this.replaceFragment(nuf);
         }else if (id == R.id.nav_home) {
             MainScreenFragment msf = new MainScreenFragment();
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_cointainer, msf, null).commit();
-
-        }/* else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
-        }*/
-
+            this.replaceFragment(msf);
+        }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+    @Override
+    public void replaceFragment(Fragment fragment) {
+        //FragmentManager fragmentManager = getSupportFragmentManager();;
+        //FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit)
+                .replace(R.id.fragment_cointainer, fragment, null).commit();
+    }
 }
+
