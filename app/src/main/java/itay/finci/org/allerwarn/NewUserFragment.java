@@ -29,7 +29,7 @@ public class NewUserFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 UserList.getInstance().add(etName.getText().toString(),etLName.getText().toString(),
-                        etPhone.getText().toString(),etPhone.getText().toString());
+                        etPhone.getText().toString(),etEPhone.getText().toString());
                 MainScreenFragment msf =new MainScreenFragment();
                 FragmentChangeListener fc =(FragmentChangeListener)getActivity();
                 fc.replaceFragment(msf);
