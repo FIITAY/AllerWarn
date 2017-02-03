@@ -11,10 +11,17 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener ,FragmentChangeListener{
@@ -38,6 +45,8 @@ public class MainActivity extends AppCompatActivity
         tvVersion= (TextView)header.findViewById(R.id.tvVersion);
         setVersionCodeInTV();
 
+        read();
+
         if(findViewById(R.id.fragment_cointainer) != null){
 
             if(savedInstanceState != null){
@@ -47,6 +56,27 @@ public class MainActivity extends AppCompatActivity
             MainScreenFragment msf = new MainScreenFragment();
 
             getSupportFragmentManager().beginTransaction().add(R.id.fragment_cointainer, msf, null).commit();
+        }
+    }
+
+    private void read(){
+        try {
+            FileInputStream fileIn = new FileInputStream("/data/data/itay.finci.org.allerwarn/files/UserList.ser");
+            ObjectInputStream in = new ObjectInputStream(fileIn);
+            UserList u = UserList.getInstance();
+            ArrayList<User> alu = (ArrayList<User>) in.readObject();
+            for (int i = 0; i < alu.size(); i++) {
+                u.add(alu.get(i));
+            }
+            in.close();
+            fileIn.close();
+        }catch(IOException i) {
+            i.printStackTrace();
+            return;
+        }catch(ClassNotFoundException c) {
+            System.out.println("Employee class not found");
+            c.printStackTrace();
+            return;
         }
     }
 

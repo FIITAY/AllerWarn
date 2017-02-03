@@ -3,10 +3,10 @@ package itay.finci.org.allerwarn;
 /**
  * Created by itay on 17/01/17.
  */
-public class User {
+public class User implements java.io.Serializable {
     private  String name, lName,phone,ePhone;
 
-    public User(String n, String ln, String p , String ep){
+    public User(String n, String ln, String p , String ep) {
         name =n;
         lName =ln;
         phone =p;

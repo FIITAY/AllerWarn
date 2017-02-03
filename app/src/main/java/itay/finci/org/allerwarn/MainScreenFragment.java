@@ -15,6 +15,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,7 +42,24 @@ public class MainScreenFragment extends Fragment {
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
         itemTouchHelper.attachToRecyclerView(recList); //set swipe to recylcerview
 
+        rewrite();
+
         return v;
+    }
+
+    public void rewrite(){
+        try {
+            FileOutputStream fileOut =
+                    new FileOutputStream("/data/data/itay.finci.org.allerwarn/files/UserList.ser");
+            ObjectOutputStream out = new ObjectOutputStream(fileOut);
+            UserList u= UserList.getInstance();
+            UserList.getInstance().write(out);
+            out.close();
+            fileOut.close();
+            //System.out.printf("Serialized data is saved in /tmp/employee.ser");
+        }catch(IOException i) {
+            i.printStackTrace();
+        }
     }
 
     ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
@@ -63,6 +83,7 @@ public class MainScreenFragment extends Fragment {
                         //list.remove(position);  //then remove item
                         UserList.getInstance().remove(position);
                         al.remove(position);
+                        rewrite();
                         return;
                     }
                 }).setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {  //not removing items if cancel is done
@@ -70,6 +91,7 @@ public class MainScreenFragment extends Fragment {
                     public void onClick(DialogInterface dialog, int which) {
                         ca.notifyItemRemoved(position + 1);    //notifies the RecyclerView Adapter that data in adapter has been removed at a particular position.
                         ca.notifyItemRangeChanged(position, ca.getItemCount());   //notifies the RecyclerView Adapter that positions of element in adapter has been changed from position(removed element index to end of list), please update it.
+                        rewrite();
                         return;
                     }
                 }).show();  //show alert dialog
