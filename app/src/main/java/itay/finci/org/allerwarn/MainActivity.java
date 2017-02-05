@@ -59,11 +59,16 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+
+
     private void read(){
         try {
-            FileInputStream fileIn = new FileInputStream("/data/data/itay.finci.org.allerwarn/files/UserList.ser");
-            ObjectInputStream in = new ObjectInputStream(fileIn);
             UserList u = UserList.getInstance();
+            if (u.size() > 0) {
+                return;
+            }
+            FileInputStream fileIn = openFileInput("UserList.ser");
+            ObjectInputStream in = new ObjectInputStream(fileIn);
             ArrayList<User> alu = (ArrayList<User>) in.readObject();
             for (int i = 0; i < alu.size(); i++) {
                 u.add(alu.get(i));
@@ -74,7 +79,7 @@ public class MainActivity extends AppCompatActivity
             i.printStackTrace();
             return;
         }catch(ClassNotFoundException c) {
-            System.out.println("Employee class not found");
+            System.out.println("UserList class not found");
             c.printStackTrace();
             return;
         }

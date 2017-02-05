@@ -49,8 +49,7 @@ public class MainScreenFragment extends Fragment {
 
     public void rewrite(){
         try {
-            FileOutputStream fileOut =
-                    new FileOutputStream("/data/data/itay.finci.org.allerwarn/files/UserList.ser");
+            FileOutputStream fileOut = getActivity().openFileOutput("UserList.ser", Context.MODE_PRIVATE);
             ObjectOutputStream out = new ObjectOutputStream(fileOut);
             UserList u= UserList.getInstance();
             UserList.getInstance().write(out);
