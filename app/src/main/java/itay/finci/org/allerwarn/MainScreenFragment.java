@@ -36,7 +36,7 @@ public class MainScreenFragment extends Fragment {
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         recList.setLayoutManager(llm);
         al =createList(UserList.getInstance().size());
-        ca= new ContactAdapter(al);
+        ca= new ContactAdapter(al, getContext());
         recList.setAdapter(ca);
 
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
@@ -70,7 +70,7 @@ public class MainScreenFragment extends Fragment {
         public void onSwiped(final RecyclerView.ViewHolder viewHolder, int direction) {
             final int position = viewHolder.getAdapterPosition(); //get position which is swipe
 
-            if (direction == ItemTouchHelper.LEFT || direction == ItemTouchHelper.RIGHT ) {    //if swipe left
+            if (direction == ItemTouchHelper.RIGHT) {    //if swipe right
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext()); //alert for confirm to delete
                 builder.setMessage("Are you sure to delete?");    //set message
@@ -94,6 +94,10 @@ public class MainScreenFragment extends Fragment {
                         return;
                     }
                 }).show();  //show alert dialog
+            }
+            if(direction == ItemTouchHelper.LEFT){ //if swipe left
+                UserList.getInstance().setActiveUserInPosition(position);
+                ca.notifyDataSetChanged();
             }
         }
     };

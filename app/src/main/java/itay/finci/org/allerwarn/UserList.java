@@ -10,6 +10,8 @@ import java.util.ArrayList;
 public class UserList implements  java.io.Serializable{
     private static UserList ourInstance = new UserList();
     private ArrayList<User> alu;
+    private User activeUser;
+    private int activeUserPosition=-1;
     public static UserList getInstance() {
         return ourInstance;
     }
@@ -42,6 +44,18 @@ public class UserList implements  java.io.Serializable{
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+
+    public void setActiveUserInPosition(int position){
+        activeUser = alu.get(position);
+        activeUserPosition = position;
+    }
+    public User getActiveUser(){
+        return activeUser;
+    }
+    public int getActiveUserPosition(){
+        return activeUserPosition;
     }
 
 }
