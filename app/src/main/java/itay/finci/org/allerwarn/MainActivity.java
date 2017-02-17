@@ -2,6 +2,7 @@ package itay.finci.org.allerwarn;
 
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.design.internal.NavigationMenuItemView;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -33,6 +34,7 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -57,6 +59,11 @@ public class MainActivity extends AppCompatActivity
 
             getSupportFragmentManager().beginTransaction().add(R.id.fragment_cointainer, msf, null).commit();
         }
+        UserList ul = UserList.getInstance();
+        if(ul.size() <1){
+            Menu nav_Menu = navigationView.getMenu();
+            nav_Menu.findItem(R.id.nav_EditUser).setVisible(false);
+        }
     }
 
 
@@ -72,6 +79,9 @@ public class MainActivity extends AppCompatActivity
             ArrayList<User> alu = (ArrayList<User>) in.readObject();
             for (int i = 0; i < alu.size(); i++) {
                 u.add(alu.get(i));
+            }
+            if(u.size() >0) {
+                u.setActiveUserInPosition(0);
             }
             in.close();
             fileIn.close();
@@ -139,6 +149,9 @@ public class MainActivity extends AppCompatActivity
         }else if (id == R.id.nav_home) {
             MainScreenFragment msf = new MainScreenFragment();
             this.replaceFragment(msf);
+        }else if (id == R.id.nav_EditUser){
+            EditUserFragment euf = new EditUserFragment();
+            this.replaceFragment(euf);
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

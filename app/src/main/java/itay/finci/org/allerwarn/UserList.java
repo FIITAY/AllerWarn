@@ -23,8 +23,14 @@ public class UserList implements  java.io.Serializable{
         alu.add(new User(n,ln,p,ep));
     }
     public void add(User u){
+        add(u,false);
+    }
+    public void add(User u, boolean sa){
         User i = new User(u.getName(), u.getlName(), u.getPhone(), u.getePhone());
         alu.add(i);
+        if(sa){
+            setActiveUserInPosition(alu.indexOf(i));
+        }
     }
     public void remove(int num){
         alu.remove(num);
@@ -57,5 +63,7 @@ public class UserList implements  java.io.Serializable{
     public int getActiveUserPosition(){
         return activeUserPosition;
     }
-
+    public int getIndexOfUser(User u){
+        return alu.indexOf(u);
+    }
 }

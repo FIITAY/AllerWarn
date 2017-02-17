@@ -5,12 +5,14 @@ import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -38,6 +40,7 @@ public class MainScreenFragment extends Fragment {
         al =createList(UserList.getInstance().size());
         ca= new ContactAdapter(al, getContext());
         recList.setAdapter(ca);
+        ca.notifyDataSetChanged();
 
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
         itemTouchHelper.attachToRecyclerView(recList); //set swipe to recylcerview
@@ -61,7 +64,7 @@ public class MainScreenFragment extends Fragment {
         }
     }
 
-    ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+    ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
         @Override
         public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
             return false;
@@ -83,6 +86,14 @@ public class MainScreenFragment extends Fragment {
                         UserList.getInstance().remove(position);
                         al.remove(position);
                         rewrite();
+                        if(UserList.getInstance().size() >0) {
+                            UserList.getInstance().setActiveUserInPosition(0);
+                            ca.notifyDataSetChanged();
+                        }else{
+                            NavigationView navigationView = (NavigationView) getActivity().findViewById(R.id.nav_view);
+                            Menu nav_Menu = navigationView.getMenu();
+                            nav_Menu.findItem(R.id.nav_EditUser).setVisible(false);
+                        }
                         return;
                     }
                 }).setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {  //not removing items if cancel is done
