@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="Milk">Milk</string>
+    <string name="Egg">Eggs</string>
+    <string name="Peanuts">Peanuts</string>
+    <string name="Tree_nuts">Tree nuts</string>
+    <string name="Fish">Fish</string>
+    <string name="Shellfish">Shellfish</string>
+    <string name="Wheat">Wheat</string>
+    <string name="Soy">Soy</string>
+</resources>

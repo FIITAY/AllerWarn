@@ -37,7 +37,7 @@ tasks.whenTaskAdded { task ->
 
 android {
     compileSdkVersion 24
-    buildToolsVersion "24.0.2"
+    buildToolsVersion '25.0.0'
     defaultConfig {
         applicationId "itay.finci.org.allerwarn"
         minSdkVersion 16

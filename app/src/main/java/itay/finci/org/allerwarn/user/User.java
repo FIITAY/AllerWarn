@@ -1,16 +1,22 @@
-package itay.finci.org.allerwarn;
+package itay.finci.org.allerwarn.user;
+
+import java.util.ArrayList;
+
+import itay.finci.org.allerwarn.allergies.Allergy;
 
 /**
  * Created by itay on 17/01/17.
  */
 public class User implements java.io.Serializable {
     private  String name, lName,phone,ePhone;
+    private ArrayList<Allergy>ala;
 
     public User(String n, String ln, String p , String ep) {
         name =n;
         lName =ln;
         phone =p;
         ePhone =ep;
+        ala = new ArrayList<Allergy>();
     }
 
     public User(User u){
@@ -50,5 +56,21 @@ public class User implements java.io.Serializable {
 
     public void setePhone(String ePhone) {
         this.ePhone = ePhone;
+    }
+
+    public void addAlergy(Allergy a){
+        ala.add(new Allergy(a));
+    }
+
+    public Allergy getAlergy(int i){
+        return ala.get(i);
+    }
+
+    public int size(){
+        return ala.size();
+    }
+
+    public void remAllergy(int position){
+        ala.remove(position);
     }
 }

@@ -1,9 +1,7 @@
-package itay.finci.org.allerwarn;
+package itay.finci.org.allerwarn.fragments;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -15,19 +13,20 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
-
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
-
-import static android.R.id.list;
+import itay.finci.org.allerwarn.R;
+import itay.finci.org.allerwarn.user.User;
+import itay.finci.org.allerwarn.user.UserAdapter;
+import itay.finci.org.allerwarn.user.UserInfo;
+import itay.finci.org.allerwarn.user.UserList;
 
 public class MainScreenFragment extends Fragment {
-    ContactAdapter ca;
-    List<ContactInfo> al;
+    UserAdapter ca;
+    List<UserInfo> al;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_main_screen, container, false);
@@ -38,7 +37,7 @@ public class MainScreenFragment extends Fragment {
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         recList.setLayoutManager(llm);
         al =createList(UserList.getInstance().size());
-        ca= new ContactAdapter(al, getContext());
+        ca= new UserAdapter(al, getContext());
         recList.setAdapter(ca);
         ca.notifyDataSetChanged();
 
@@ -50,7 +49,7 @@ public class MainScreenFragment extends Fragment {
         return v;
     }
 
-    public void rewrite(){
+    private void rewrite(){
         try {
             FileOutputStream fileOut = getActivity().openFileOutput("UserList.ser", Context.MODE_PRIVATE);
             ObjectOutputStream out = new ObjectOutputStream(fileOut);
@@ -114,11 +113,11 @@ public class MainScreenFragment extends Fragment {
     };
 
 
-    private List<ContactInfo> createList(int size) {
+    private List<UserInfo> createList(int size) {
 
-        List<ContactInfo> result = new ArrayList<ContactInfo>();
+        List<UserInfo> result = new ArrayList<UserInfo>();
         for (int i=0; i < size; i++) {
-            ContactInfo ci = new ContactInfo();
+            UserInfo ci = new UserInfo();
             User u = UserList.getInstance().getUser(i);
             ci.name = u.getName();
             ci.lName = u.getlName();

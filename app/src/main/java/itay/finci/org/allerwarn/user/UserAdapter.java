@@ -1,29 +1,28 @@
-package itay.finci.org.allerwarn;
+package itay.finci.org.allerwarn.user;
 
 import android.content.Context;
 import android.graphics.Color;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
 import java.util.List;
+
+import itay.finci.org.allerwarn.R;
 
 /**
  * Created by itay on 27/01/17.
  */
 
-public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactViewHolder> {
+public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ContactViewHolder> {
 
-    private List<ContactInfo> contactList;
+    private List<UserInfo> contactList;
     private Context c;
 
-    public ContactAdapter(List<ContactInfo> contactList, Context context) {
+    public UserAdapter(List<UserInfo> contactList, Context context) {
         this.contactList = contactList;
         c = context;
     }
@@ -36,7 +35,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
 
     @Override
     public void onBindViewHolder(ContactViewHolder contactViewHolder, int i) {
-        ContactInfo ci = contactList.get(i);
+        UserInfo ci = contactList.get(i);
         contactViewHolder.vName.setText(ci.name);
         contactViewHolder.vLName.setText(ci.lName);
         contactViewHolder.vPhone.setText(ci.phone);

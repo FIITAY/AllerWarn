@@ -1,4 +1,4 @@
-package itay.finci.org.allerwarn;
+package itay.finci.org.allerwarn.user;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;

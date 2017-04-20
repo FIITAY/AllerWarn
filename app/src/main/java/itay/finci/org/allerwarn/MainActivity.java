@@ -2,27 +2,28 @@ package itay.finci.org.allerwarn;
 
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.design.internal.NavigationMenuItemView;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
+
+import itay.finci.org.allerwarn.fragments.AddAlergyFragment;
+import itay.finci.org.allerwarn.fragments.MainScreenFragment;
+import itay.finci.org.allerwarn.fragments.NewUserFragment;
+import itay.finci.org.allerwarn.user.User;
+import itay.finci.org.allerwarn.user.UserList;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener ,FragmentChangeListener{
@@ -63,6 +64,9 @@ public class MainActivity extends AppCompatActivity
         if(ul.size() <1){
             Menu nav_Menu = navigationView.getMenu();
             nav_Menu.findItem(R.id.nav_EditUser).setVisible(false);
+            nav_Menu.findItem(R.id.nav_addAler).setVisible(false);
+            nav_Menu.findItem(R.id.nav_nfcWrite).setVisible(false);
+            nav_Menu.findItem(R.id.nav_nfcRead).setVisible(false);
         }
     }
 
@@ -152,6 +156,9 @@ public class MainActivity extends AppCompatActivity
         }else if (id == R.id.nav_EditUser){
             EditUserFragment euf = new EditUserFragment();
             this.replaceFragment(euf);
+        }else if (id == R.id.nav_addAler){
+            AddAlergyFragment aaf = new AddAlergyFragment();
+            this.replaceFragment(aaf);
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

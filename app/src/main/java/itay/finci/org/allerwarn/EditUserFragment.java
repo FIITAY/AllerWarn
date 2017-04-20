@@ -1,13 +1,15 @@
 package itay.finci.org.allerwarn;
 
 import android.os.Bundle;
-import android.support.design.internal.NavigationMenuItemView;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+
+import itay.finci.org.allerwarn.fragments.MainScreenFragment;
+import itay.finci.org.allerwarn.user.UserList;
 
 public class EditUserFragment extends Fragment {
     EditText etName,etLName,etPhone,etEPhone;

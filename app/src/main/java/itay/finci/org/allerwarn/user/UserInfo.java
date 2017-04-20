@@ -1,14 +1,14 @@
-package itay.finci.org.allerwarn;
+package itay.finci.org.allerwarn.user;
 
 /**
  * Created by itay on 27/01/17.
  */
 
-public class ContactInfo {
-    protected String name;
-    protected String lName;
-    protected String phone;
-    protected String ePhone;
+public class UserInfo {
+    public String name;
+    public String lName;
+    public String phone;
+    public String ePhone;
 
 
     protected static final String NAME_PREFIX = "Name_";
