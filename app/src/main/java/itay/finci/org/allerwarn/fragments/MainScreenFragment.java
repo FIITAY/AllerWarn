@@ -25,7 +25,7 @@ import itay.finci.org.allerwarn.user.UserInfo;
 import itay.finci.org.allerwarn.user.UserList;
 
 public class MainScreenFragment extends Fragment {
-    UserAdapter ca;
+    public UserAdapter ca;
     List<UserInfo> al;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -128,5 +128,8 @@ public class MainScreenFragment extends Fragment {
         }
 
         return result;
+    }
+    public void refresh(){
+        ca.notifyDataSetChanged();
     }
 }

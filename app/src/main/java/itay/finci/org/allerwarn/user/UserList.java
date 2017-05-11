@@ -25,6 +25,17 @@ public class UserList implements  java.io.Serializable{
     public void add(User u){
         add(u,false);
     }
+    public void add(String user){
+        int index=0;
+        byte[] b= user.getBytes();
+        String[] parts = user.split(",");
+        String name=parts[0];
+        String lname=parts[1];
+        String phone=parts[2];
+        String ephone=parts[3];
+
+        alu.add(new User(name,lname,phone,ephone));
+    }
     public void add(User u, boolean sa){
         User i = new User(u.getName(), u.getlName(), u.getPhone(), u.getePhone());
         alu.add(i);

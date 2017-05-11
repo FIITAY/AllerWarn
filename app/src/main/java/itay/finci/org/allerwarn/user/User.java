@@ -1,6 +1,9 @@
 package itay.finci.org.allerwarn.user;
 
+import java.io.ByteArrayOutputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Locale;
 
 import itay.finci.org.allerwarn.allergies.Allergy;
 
@@ -72,5 +75,35 @@ public class User implements java.io.Serializable {
 
     public void remAllergy(int position){
         ala.remove(position);
+    }
+
+    public byte[] getByteCode(){
+        try {
+            byte[] lang = new byte[0];
+            lang = Locale.getDefault().getLanguage().getBytes("UTF-8");
+            byte[] fn = (getName()+',').getBytes("UTF-8"); // Name in UTF-8
+            byte[] ln = (getlName()+',').getBytes("UTF-8");
+            byte[] ph1 = (getPhone()+',').getBytes("UTF-8");
+            byte[] ph2 = (getePhone()+',').getBytes("UTF-8");
+
+
+            int langSize = lang.length;
+            int textLength = fn.length + ln.length + ph1.length + ph2.length;
+            ByteArrayOutputStream payload = new ByteArrayOutputStream(1 + langSize + textLength);
+            payload.write((byte) (langSize & 0x1F));
+            payload.write(lang, 0, langSize);
+            //payload.write((byte) (fn.length & 0x1F));
+            payload.write(fn, 0, fn.length);
+           // payload.write((byte) (ln.length & 0x1F));
+            payload.write(ln,0,ln.length);
+            //payload.write((byte) (ph1.length & 0x1F));
+            payload.write(ph1,0,ph1.length);
+            //payload.write((byte) (ph2.length & 0x1F));
+            payload.write(ph2,0,ph2.length);
+            return  payload.toByteArray();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

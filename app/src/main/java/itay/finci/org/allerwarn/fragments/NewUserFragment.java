@@ -39,7 +39,6 @@ public class NewUserFragment extends Fragment {
                 nav_Menu.findItem(R.id.nav_EditUser).setVisible(true);
                 nav_Menu.findItem(R.id.nav_addAler).setVisible(true);
                 nav_Menu.findItem(R.id.nav_nfcWrite).setVisible(true);
-                nav_Menu.findItem(R.id.nav_nfcRead).setVisible(true);
                 User u = new User(etName.getText().toString(),etLName.getText().toString(),
                         etPhone.getText().toString(),etEPhone.getText().toString());
                 UserList.getInstance().add(u,true);

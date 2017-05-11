@@ -1,4 +1,4 @@
-package itay.finci.org.allerwarn;
+package itay.finci.org.allerwarn.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
+import itay.finci.org.allerwarn.FragmentChangeListener;
+import itay.finci.org.allerwarn.R;
 import itay.finci.org.allerwarn.fragments.MainScreenFragment;
 import itay.finci.org.allerwarn.user.UserList;
 

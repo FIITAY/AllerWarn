@@ -1,14 +1,25 @@
 package itay.finci.org.allerwarn;
 
+import android.app.PendingIntent;
+import android.app.ProgressDialog;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.nfc.NdefMessage;
+import android.nfc.NdefRecord;
+import android.nfc.NfcAdapter;
+import android.nfc.Tag;
+import android.nfc.tech.Ndef;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,9 +28,13 @@ import android.widget.TextView;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
+import itay.finci.org.allerwarn.NFC.NFCManager;
 import itay.finci.org.allerwarn.fragments.AddAlergyFragment;
+import itay.finci.org.allerwarn.fragments.EditUserFragment;
 import itay.finci.org.allerwarn.fragments.MainScreenFragment;
 import itay.finci.org.allerwarn.fragments.NewUserFragment;
 import itay.finci.org.allerwarn.user.User;
@@ -28,6 +43,11 @@ import itay.finci.org.allerwarn.user.UserList;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener ,FragmentChangeListener{
     TextView tvVersion;
+    private NdefMessage message = null;
+    private NFCManager nfcMger;
+    private ProgressDialog dialog;
+    Tag currentTag;
+    private View v;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,6 +55,9 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        nfcMger = new NFCManager(this);
+        v = findViewById(R.id.drawer_layout);
+        dialog = new ProgressDialog(MainActivity.this);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -66,11 +89,108 @@ public class MainActivity extends AppCompatActivity
             nav_Menu.findItem(R.id.nav_EditUser).setVisible(false);
             nav_Menu.findItem(R.id.nav_addAler).setVisible(false);
             nav_Menu.findItem(R.id.nav_nfcWrite).setVisible(false);
-            nav_Menu.findItem(R.id.nav_nfcRead).setVisible(false);
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
 
+        try {
+            nfcMger.verifyNFC();
+            //nfcMger.enableDispatch();
+
+            Intent nfcIntent = new Intent(this, getClass());
+            nfcIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, nfcIntent, 0);
+            IntentFilter[] intentFiltersArray = new IntentFilter[] {};
+            String[][] techList = new String[][] { { android.nfc.tech.Ndef.class.getName() }, { android.nfc.tech.NdefFormatable.class.getName() } };
+            NfcAdapter nfcAdpt = NfcAdapter.getDefaultAdapter(this);
+            nfcAdpt.enableForegroundDispatch(this, pendingIntent, intentFiltersArray, techList);
+        }
+        catch(NFCManager.NFCNotSupported nfcnsup) {
+            Snackbar.make(v, "NFC not supported", Snackbar.LENGTH_LONG).show();
+        }
+        catch(NFCManager.NFCNotEnabled nfcnEn) {
+            Snackbar.make(v, "NFC Not enabled", Snackbar.LENGTH_LONG).show();
+        }
+
+    }
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        nfcMger.disableDispatch();
+    }
+
+    @Override
+    public void onNewIntent(Intent intent) {
+        Log.d("Nfc", "New intent");
+        // It is the time to write the tag
+        currentTag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
+        if (message != null) {
+            nfcMger.writeTag(currentTag, message);
+            if(dialog.isShowing()){
+                dialog.dismiss();
+            }
+            Snackbar.make(v, "Tag written", Snackbar.LENGTH_LONG).show();
+            message=null;
+        }else{
+            Ndef ndef = Ndef.get(currentTag);
+            if (ndef == null) {
+                // NDEF is not supported by this Tag.
+                return;
+            }
+
+            NdefMessage ndefMessage = ndef.getCachedNdefMessage();
+
+            NdefRecord[] records = ndefMessage.getRecords();
+            for (NdefRecord ndefRecord : records) {
+                if (ndefRecord.getTnf() == NdefRecord.TNF_WELL_KNOWN && Arrays.equals(ndefRecord.getType(), NdefRecord.RTD_TEXT)) {
+                    try {
+                        //Snackbar.make(v, readText(ndefRecord), Snackbar.LENGTH_LONG).show();
+                        String user= readText(ndefRecord);
+                        UserList.getInstance().add(user);
+                        MainScreenFragment msf = new MainScreenFragment();
+                        this.replaceFragment(msf);
+                       // msf.refresh();
+                    } catch (UnsupportedEncodingException e) {
+                        Log.e("TAG", "Unsupported Encoding", e);
+                    }
+                }
+            }
+            if(dialog.isShowing()){
+                dialog.dismiss();
+            }
+            Snackbar.make(v, "Tag read", Snackbar.LENGTH_LONG).show();
+        }
+    }
+    private String readText(NdefRecord record) throws UnsupportedEncodingException {
+        /*
+         * See NFC forum specification for "Text Record Type Definition" at 3.2.1
+         *
+         * http://www.nfc-forum.org/specs/
+         *
+         * bit_7 defines encoding
+         * bit_6 reserved for future use, must be 0
+         * bit_5..0 length of IANA language code
+         */
+
+        byte[] payload = record.getPayload();
+
+        // Get the Text Encoding
+        String textEncoding = ((payload[0] & 128) == 0) ? "UTF-8" : "UTF-16";
+
+        // Get the Language Code
+        int languageCodeLength = payload[0] & 0063;
+
+        // String languageCode = new String(payload, 1, languageCodeLength, "US-ASCII");
+        // e.g. "en"
+
+        // Get the Text
+        return new String(payload, languageCodeLength + 1, payload.length - languageCodeLength - 1, textEncoding);
+    }
 
     private void read(){
         try {
@@ -159,11 +279,32 @@ public class MainActivity extends AppCompatActivity
         }else if (id == R.id.nav_addAler){
             AddAlergyFragment aaf = new AddAlergyFragment();
             this.replaceFragment(aaf);
+        }else if( id == R.id.nav_nfcWrite){
+            onNFCwrite();
+        }else if( id == R.id.nav_nfcRead){
+            onNFCRead();
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+    private void onNFCwrite() {
+        message =  nfcMger.createTextMessage(UserList.getInstance().getActiveUser().getByteCode());
+        if (message != null) {
+            dialog.setMessage("Tag NFC Tag please");
+            dialog.show();
+        }
+    }
+
+    private  void onNFCRead(){
+        message =null;
+        dialog = new ProgressDialog(MainActivity.this);
+        dialog.setMessage("Tag NFC Tag please");
+        dialog.show();
+
+    }
+
     @Override
     public void replaceFragment(Fragment fragment) {
         //FragmentManager fragmentManager = getSupportFragmentManager();;
