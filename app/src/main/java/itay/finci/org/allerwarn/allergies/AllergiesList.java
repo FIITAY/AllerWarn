@@ -42,16 +42,66 @@ public class AllergiesList {
         return ala;
     }
 
-    public void setAla(ArrayList<Allergy> ala) {
-        this.ala = ala;
-    }
-
     public int size(){
         return this.ala.size();
     }
 
     public Allergy getAller(int id){
         return ala.get(id);
+    }
+
+    public Allergy getAller(String id){
+        switch (id){
+            case "1":
+                return ala.get(0);
+                //break;
+            case "2":
+                return ala.get(1);
+               // break;
+            case "3":
+                return ala.get(2);
+              //  break;
+            case "4":
+                return ala.get(3);
+             //   break;
+            case "5":
+                return ala.get(4);
+              //  break;
+            case "6":
+                return ala.get(5);
+              //  break;
+            case "7":
+                return ala.get(6);
+              //  break;
+            case "8":
+                return ala.get(7);
+              //  break;
+            case "Milk":
+                return ala.get(0);
+             //   break;
+            case "Egg":
+                return ala.get(1);
+              //  break;
+            case "Peanuts":
+                return ala.get(2);
+             //   break;
+            case "Tree nuts":
+                return ala.get(3);
+              //  break;
+            case "Fish":
+                return ala.get(4);
+              //  break;
+            case "Shellfish":
+                return ala.get(5);
+              //  break;
+            case "Wheat":
+                return ala.get(6);
+             //   break;
+            case "Soy":
+                return ala.get(7);
+             //   break;
+        }
+        return null;
     }
 
 }

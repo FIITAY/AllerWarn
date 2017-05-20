@@ -1,7 +1,10 @@
 package itay.finci.org.allerwarn.fragments;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -13,6 +16,13 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+
+import com.google.android.gms.vision.barcode.Barcode;
+
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -28,7 +38,7 @@ public class MainScreenFragment extends Fragment {
     public UserAdapter ca;
     List<UserInfo> al;
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, final Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_main_screen, container, false);
 
         RecyclerView recList = (RecyclerView) v.findViewById(R.id.cardList);
@@ -45,10 +55,8 @@ public class MainScreenFragment extends Fragment {
         itemTouchHelper.attachToRecyclerView(recList); //set swipe to recylcerview
 
         rewrite();
-
         return v;
     }
-
     private void rewrite(){
         try {
             FileOutputStream fileOut = getActivity().openFileOutput("UserList.ser", Context.MODE_PRIVATE);

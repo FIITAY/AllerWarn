@@ -5,6 +5,8 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
@@ -24,6 +26,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+
+import com.google.android.gms.vision.barcode.Barcode;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -151,9 +155,14 @@ public class MainActivity extends AppCompatActivity
                     try {
                         //Snackbar.make(v, readText(ndefRecord), Snackbar.LENGTH_LONG).show();
                         String user= readText(ndefRecord);
-                        UserList.getInstance().add(user);
+                        UserList.getInstance().add(user, getApplicationContext());
                         MainScreenFragment msf = new MainScreenFragment();
                         this.replaceFragment(msf);
+                        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+                        Menu nav_Menu = navigationView.getMenu();
+                        nav_Menu.findItem(R.id.nav_EditUser).setVisible(true);
+                        nav_Menu.findItem(R.id.nav_addAler).setVisible(true);
+                        nav_Menu.findItem(R.id.nav_nfcWrite).setVisible(true);
                        // msf.refresh();
                     } catch (UnsupportedEncodingException e) {
                         Log.e("TAG", "Unsupported Encoding", e);
@@ -302,7 +311,6 @@ public class MainActivity extends AppCompatActivity
         dialog = new ProgressDialog(MainActivity.this);
         dialog.setMessage("Tag NFC Tag please");
         dialog.show();
-
     }
 
     @Override

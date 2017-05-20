@@ -85,10 +85,13 @@ public class User implements java.io.Serializable {
             byte[] ln = (getlName()+',').getBytes("UTF-8");
             byte[] ph1 = (getPhone()+',').getBytes("UTF-8");
             byte[] ph2 = (getePhone()+',').getBytes("UTF-8");
-
-
+            String allergies="";
+            for (int i = 0; i < size(); i++) {
+                allergies= allergies+getAlergy(i).getId()+",";
+            }
+            byte[] allergiesbyte= allergies.getBytes("UTF-8");
             int langSize = lang.length;
-            int textLength = fn.length + ln.length + ph1.length + ph2.length;
+            int textLength = fn.length + ln.length + ph1.length + ph2.length + allergiesbyte.length;
             ByteArrayOutputStream payload = new ByteArrayOutputStream(1 + langSize + textLength);
             payload.write((byte) (langSize & 0x1F));
             payload.write(lang, 0, langSize);
@@ -100,6 +103,7 @@ public class User implements java.io.Serializable {
             payload.write(ph1,0,ph1.length);
             //payload.write((byte) (ph2.length & 0x1F));
             payload.write(ph2,0,ph2.length);
+            payload.write(allergiesbyte,0,allergiesbyte.length);
             return  payload.toByteArray();
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
