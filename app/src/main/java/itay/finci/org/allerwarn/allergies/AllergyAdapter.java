@@ -16,7 +16,10 @@ import itay.finci.org.allerwarn.user.User;
 import itay.finci.org.allerwarn.user.UserList;
 
 /**
+ * <pre>
  * Created by itay on 24/02/17.
+ * Adapter for making recyclerView with the allergy information
+ * </pre>
  */
 
 public class AllergyAdapter extends RecyclerView.Adapter<AllergyAdapter.ContactViewHolder> {

@@ -34,6 +34,9 @@ import itay.finci.org.allerwarn.user.UserAdapter;
 import itay.finci.org.allerwarn.user.UserInfo;
 import itay.finci.org.allerwarn.user.UserList;
 
+/**
+ * the main fragment that shopw the list of user's
+ */
 public class MainScreenFragment extends Fragment {
     public UserAdapter ca;
     List<UserInfo> al;
@@ -57,6 +60,10 @@ public class MainScreenFragment extends Fragment {
         rewrite();
         return v;
     }
+
+    /**
+     * writes the userlist to the userlist file
+     */
     private void rewrite(){
         try {
             FileOutputStream fileOut = getActivity().openFileOutput("UserList.ser", Context.MODE_PRIVATE);
@@ -71,15 +78,26 @@ public class MainScreenFragment extends Fragment {
         }
     }
 
+    /**
+     * listiner to movement of objects
+     */
     ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
         @Override
         public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
             return false;
         }
+
+        /**
+         * the swipe right\left listiner
+         * @param viewHolder the RecyclerView
+         * @param direction direction of swipe
+         */
         @Override
         public void onSwiped(final RecyclerView.ViewHolder viewHolder, int direction) {
             final int position = viewHolder.getAdapterPosition(); //get position which is swipe
-
+            /**
+             * if swiped right = delete user
+             */
             if (direction == ItemTouchHelper.RIGHT) {    //if swipe right
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext()); //alert for confirm to delete
@@ -113,6 +131,9 @@ public class MainScreenFragment extends Fragment {
                     }
                 }).show();  //show alert dialog
             }
+            /**
+             * if swiped left = make user active
+             */
             if(direction == ItemTouchHelper.LEFT){ //if swipe left
                 UserList.getInstance().setActiveUserInPosition(position);
                 ca.notifyDataSetChanged();
@@ -120,7 +141,11 @@ public class MainScreenFragment extends Fragment {
         }
     };
 
-
+    /**+
+     * the UserAdapter use this function to make the data more compatable to hime
+     * @param size the amount of user's
+     * @return the List that the Adapter use
+     */
     private List<UserInfo> createList(int size) {
 
         List<UserInfo> result = new ArrayList<UserInfo>();

@@ -35,15 +35,30 @@ import java.util.Locale;
 
 import itay.finci.org.allerwarn.user.User;
 
+/**
+ * <pre>
+ * Copyright (C) 2016, francesco Azzola  (http://www.survivingwithandroid.com)
+ * nfc manager use to write nfc tags
+ * </pre>
+ */
 public class NFCManager {
 
     private Activity activity;
     private NfcAdapter nfcAdpt;
 
+    /**
+     * public Constructor
+     * @param activity the activity that you use it in
+     */
     public NFCManager(Activity activity) {
         this.activity = activity;
     }
 
+    /**
+     * verify that the Phone is compatible with NFC & nfc is enabled
+     * @throws NFCNotSupported
+     * @throws NFCNotEnabled
+     */
     public void verifyNFC() throws NFCNotSupported, NFCNotEnabled {
 
         nfcAdpt = NfcAdapter.getDefaultAdapter(activity);
@@ -85,7 +100,11 @@ public class NFCManager {
         }
     }
 
-
+    /**
+     * writeTag function
+     * @param tag nfc tag
+     * @param message ndef message to write on tag
+     */
     public void writeTag(Tag tag, NdefMessage message)  {
         if (tag != null) {
             try {
@@ -119,6 +138,11 @@ public class NFCManager {
 
     }
 
+    /**
+     * take byte[] that includ message and make it ndef record
+     * @param content the message content
+     * @return NdefMessage or null
+     */
     public NdefMessage createTextMessage(byte[] content) {
         try {
             NdefRecord record = new NdefRecord(NdefRecord.TNF_WELL_KNOWN, NdefRecord.RTD_TEXT, new byte[0], content);

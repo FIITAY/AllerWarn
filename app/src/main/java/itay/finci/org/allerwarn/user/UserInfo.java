@@ -1,7 +1,10 @@
 package itay.finci.org.allerwarn.user;
 
 /**
+ * <pre>
  * Created by itay on 27/01/17.
+ * used for the userAdapter in the main screen fragment
+ * </pre>
  */
 
 public class UserInfo {

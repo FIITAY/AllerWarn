@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -52,6 +53,11 @@ public class MainActivity extends AppCompatActivity
     private ProgressDialog dialog;
     Tag currentTag;
     private View v;
+
+    /**
+     * setting the nfcManager,the progress dialog, reading , and fragment
+     * @param savedInstanceState automatic get
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -128,6 +134,10 @@ public class MainActivity extends AppCompatActivity
         nfcMger.disableDispatch();
     }
 
+    /**
+     * getting the nfc intent and writing if there is message to write or reading if there is no message to write
+     * @param intent get it automatic
+     */
     @Override
     public void onNewIntent(Intent intent) {
         Log.d("Nfc", "New intent");
@@ -175,6 +185,13 @@ public class MainActivity extends AppCompatActivity
             Snackbar.make(v, "Tag read", Snackbar.LENGTH_LONG).show();
         }
     }
+
+    /**
+     * read the text out of the ndef record to a string
+     * @param record ndef record
+     * @return string content of record
+     * @throws UnsupportedEncodingException
+     */
     private String readText(NdefRecord record) throws UnsupportedEncodingException {
         /*
          * See NFC forum specification for "Text Record Type Definition" at 3.2.1
@@ -201,6 +218,9 @@ public class MainActivity extends AppCompatActivity
         return new String(payload, languageCodeLength + 1, payload.length - languageCodeLength - 1, textEncoding);
     }
 
+    /**
+     * reading the userlist file to import all users
+     */
     private void read(){
         try {
             UserList u = UserList.getInstance();
@@ -228,6 +248,9 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    /**
+     * set the version code in the navBar
+     */
     private void setVersionCodeInTV() {
         try {
             String s = getApplicationContext().getPackageManager().getPackageInfo(getApplicationContext()
@@ -269,7 +292,16 @@ public class MainActivity extends AppCompatActivity
 
         return super.onOptionsItemSelected(item);
     }
+    MainScreenFragment msf = new MainScreenFragment();
+    NewUserFragment nuf = new NewUserFragment();
+    EditUserFragment euf = new EditUserFragment();
+    AddAlergyFragment aaf = new AddAlergyFragment();
 
+    /**
+     * getting witch button you pressed in the nav bar and inflating the fragment
+     * @param item get automatic
+     * @return true\false
+     */
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -277,16 +309,16 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_newUser) {
-            NewUserFragment nuf = new NewUserFragment();
+            nuf = new NewUserFragment();
             this.replaceFragment(nuf);
         }else if (id == R.id.nav_home) {
-            MainScreenFragment msf = new MainScreenFragment();
+            msf = new MainScreenFragment();
             this.replaceFragment(msf);
         }else if (id == R.id.nav_EditUser){
-            EditUserFragment euf = new EditUserFragment();
+            euf = new EditUserFragment();
             this.replaceFragment(euf);
         }else if (id == R.id.nav_addAler){
-            AddAlergyFragment aaf = new AddAlergyFragment();
+            aaf = new AddAlergyFragment();
             this.replaceFragment(aaf);
         }else if( id == R.id.nav_nfcWrite){
             onNFCwrite();
@@ -298,6 +330,9 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    /**
+     * when you press NFC write button this function is called ( make the massege to write and activate dialog)
+     */
     private void onNFCwrite() {
         message =  nfcMger.createTextMessage(UserList.getInstance().getActiveUser().getByteCode());
         if (message != null) {
@@ -305,20 +340,30 @@ public class MainActivity extends AppCompatActivity
             dialog.show();
         }
     }
-
-    private  void onNFCRead(){
+    /**
+     * when you press NFC read button this function is called ( make the massege to null and activate dialog)
+     */
+    private void onNFCRead(){
         message =null;
         dialog = new ProgressDialog(MainActivity.this);
         dialog.setMessage("Tag NFC Tag please");
         dialog.show();
     }
 
+    /**
+     * replace fragment function
+     * @param fragment fragment object to change to
+     */
     @Override
     public void replaceFragment(Fragment fragment) {
         //FragmentManager fragmentManager = getSupportFragmentManager();;
         //FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit)
-                .replace(R.id.fragment_cointainer, fragment, null).commit();
+
+        FragmentTransaction ft=getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit)
+                .replace(R.id.fragment_cointainer, fragment, null);
+        ft.detach(fragment);
+        ft.attach(fragment);
+        ft.commit();
     }
 }
 

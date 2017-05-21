@@ -1,11 +1,10 @@
 package itay.finci.org.allerwarn.fragments;
 
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
+
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -27,7 +26,14 @@ import itay.finci.org.allerwarn.allergies.AllergyInfo;
 import itay.finci.org.allerwarn.user.User;
 import itay.finci.org.allerwarn.user.UserList;
 
-
+/**
+ * <pre>
+ * Created by itay on 19/02/17.
+ * Fragment that shows a list of Allergy object that you can add to your user,
+ * swipe to the left for add allergy,
+ * swipe to the right for removing allergy
+ * </pre>
+ */
 public class AddAlergyFragment extends Fragment {
     AllergyAdapter ca;
     List<AllergyInfo> al;
@@ -55,6 +61,9 @@ public class AddAlergyFragment extends Fragment {
         return v;
     }
 
+    /**
+     * use to write to the user file after you change something
+     */
     private void rewrite(){
         try {
             FileOutputStream fileOut = getActivity().openFileOutput("UserList.ser", Context.MODE_PRIVATE);
@@ -69,15 +78,26 @@ public class AddAlergyFragment extends Fragment {
         }
     }
 
+    /**
+     * listiner for swiping left or right the objects.
+     */
     ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
         @Override
         public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
             return false;
         }
+
+        /**
+         * listine for swiping
+         * @param viewHolder the RecyclerView
+         * @param direction left or right
+         */
         @Override
         public void onSwiped(final RecyclerView.ViewHolder viewHolder, int direction) {
             final int position = viewHolder.getAdapterPosition(); //get position which is swipe
-
+            /**
+             * if direction is right removing the allergy
+             */
             if (direction == ItemTouchHelper.RIGHT) {    //if swipe right
                 Allergy a = allergiesList.getAller(position);
                 for (int i = 0; i < active.size(); i++) {
@@ -91,6 +111,9 @@ public class AddAlergyFragment extends Fragment {
                 }
                 ca.notifyDataSetChanged();
             }
+            /**
+             * if direction is left adding the allergy
+             */
             if(direction == ItemTouchHelper.LEFT){ //if swipe left
                 Allergy a = allergiesList.getAller(position);
                 System.out.println("alergy Id= " + a.getId());
@@ -109,6 +132,11 @@ public class AddAlergyFragment extends Fragment {
         }
     };
 
+    /**
+     * user for making the adapter that shows in the RecyclerView
+     * @param size amount of items
+     * @return list that shows in the adapter
+     */
     private List<AllergyInfo> createList(int size) {
 
         List<AllergyInfo> result = new ArrayList<AllergyInfo>();

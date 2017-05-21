@@ -7,14 +7,61 @@ import java.util.ArrayList;
 import itay.finci.org.allerwarn.R;
 
 /**
+ * <pre>
  * Created by itay on 19/02/17.
+ * this class includ the allergies arraylist
+ * the allergies id's and name table:
+ * </pre>
+ * <table >
+ *  <tr>
+ *      <th>Allergy id</th>
+ *      <th>Allergy name</th>
+ *  </tr>
+ *  <tr>
+ *      <th>1</th>
+ *      <th>Milk</th>
+ *  </tr>
+ *  <tr>
+ *      <th>2</th>
+ *      <th>Egg</th>
+ *  </tr>
+ *  <tr>
+ *      <th>3</th>
+ *      <th>Peanuts</th>
+ *  </tr>
+ *  <tr>
+ *      <th>4</th>
+ *      <th>Tree nuts</th>
+ *  </tr>
+ *  <tr>
+ *      <th>5</th>
+ *      <th>Fish</th>
+ *  </tr>
+ *  <tr>
+ *      <th>6</th>
+ *      <th>Shellfish</th>
+ *  </tr>
+ *  <tr>
+ *      <th>7</th>
+ *      <th>Wheat</th>
+ *  </tr>
+ *  <tr>
+ *      <th>8</th>
+ *      <th>Soy</th>
+ *  </tr>
+ *  </table>
+
  */
 public class AllergiesList {
     private static AllergiesList ourInstance = null;
-
     private ArrayList<Allergy> ala;
     private Context ctx;
 
+    /**
+     * public constructor
+     * @param ctxx the context of the app to pass to the private constructor and get the string name of the allergies
+     * @return AllergiesList object
+     */
     public static AllergiesList getInstance(Context ctxx) {
         if (ourInstance == null) {
             ourInstance = new AllergiesList(ctxx);
@@ -25,6 +72,48 @@ public class AllergiesList {
         return ourInstance;
     }
 
+    /**
+     * make the arraylist of the allergies
+     * <table style="width:100%">
+     *  <tr>
+     *      <th>Allergy id</th>
+     *      <th>Allergy name</th>
+     *  </tr>
+     *  <tr>
+     *      <th>1</th>
+     *      <th>Milk</th>
+     *  </tr>
+     *  <tr>
+     *      <th>2</th>
+     *      <th>Egg</th>
+     *  </tr>
+     *  <tr>
+     *      <th>3</th>
+     *      <th>Peanuts</th>
+     *  </tr>
+     *  <tr>
+     *      <th>4</th>
+     *      <th>Tree nuts</th>
+     *  </tr>
+     *  <tr>
+     *      <th>5</th>
+     *      <th>Fish</th>
+     *  </tr>
+     *  <tr>
+     *      <th>6</th>
+     *      <th>Shellfish</th>
+     *  </tr>
+     *  <tr>
+     *      <th>7</th>
+     *      <th>Wheat</th>
+     *  </tr>
+     *  <tr>
+     *      <th>8</th>
+     *      <th>Soy</th>
+     *  </tr>
+     *  </table>
+     * @param ctx the context of the app to get the string name to show the allergy
+     */
     private AllergiesList(Context ctx) {
         this.ctx = ctx;
         ala= new ArrayList<Allergy>();
@@ -38,10 +127,16 @@ public class AllergiesList {
         ala.add(new Allergy(8,"Soy",ctx.getString(R.string.Soy)));
     }
 
+    /**
+     * @return the allergy arraylist
+     */
     public ArrayList<Allergy> getAla() {
         return ala;
     }
 
+    /**
+     * @return the size of the allergy arrayList
+     */
     public int size(){
         return this.ala.size();
     }
@@ -50,6 +145,14 @@ public class AllergiesList {
         return ala.get(id);
     }
 
+    /**
+     * <pre>
+     * get a id number or allergy name and output the allergy object
+     * if the param id dose'nt mach to any allergy it's output null
+     * </pre>
+     * @param id string that contain number (between 1-8) or name of allergy
+     * @return Aleergy object or null
+     */
     public Allergy getAller(String id){
         switch (id){
             case "1":

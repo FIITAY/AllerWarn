@@ -8,12 +8,22 @@ import java.util.Locale;
 import itay.finci.org.allerwarn.allergies.Allergy;
 
 /**
+ * <pre>
  * Created by itay on 17/01/17.
+ * User Object
+ * </pre>
  */
 public class User implements java.io.Serializable {
     private  String name, lName,phone,ePhone;
     private ArrayList<Allergy>ala;
 
+    /**
+     * public constructor to make new user from data(Strings)
+     * @param n user name
+     * @param ln user last name
+     * @param p user phone
+     * @param ep user emergency phone
+     */
     public User(String n, String ln, String p , String ep) {
         name =n;
         lName =ln;
@@ -22,6 +32,10 @@ public class User implements java.io.Serializable {
         ala = new ArrayList<Allergy>();
     }
 
+    /**
+     * public constructor to make new user from existing user
+     * @param u the old user
+     */
     public User(User u){
         name =u.getName();
         lName =u.getlName();
@@ -29,54 +43,112 @@ public class User implements java.io.Serializable {
         ePhone =u.getePhone();
     }
 
+    /**
+     * get user name
+     * @return user name
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * set user name
+     * @param name new user name
+     */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * get user last name
+     * @return user last name
+     */
     public String getlName() {
         return lName;
     }
 
+    /**
+     * set user last name
+     * @param lName new user last name
+     */
     public void setlName(String lName) {
         this.lName = lName;
     }
 
+    /**
+     * get user phone
+     * @return user phone
+     */
     public String getPhone() {
         return phone;
     }
 
+    /**
+     * set user phone
+     * @param phone new user phone
+     */
     public void setPhone(String phone) {
         this.phone = phone;
     }
 
+    /**
+     * get user emergency phone
+     * @return user emergency phone
+     */
     public String getePhone() {
         return ePhone;
     }
 
+    /**
+     * set user emergency phone
+     * @param ePhone new user emergency phone
+     */
     public void setePhone(String ePhone) {
         this.ePhone = ePhone;
     }
 
+    /**
+     * add allergy to user
+     * @param a allergy object
+     */
     public void addAlergy(Allergy a){
         ala.add(new Allergy(a));
     }
 
+    /**
+     * get user allergy in index
+     * @param i index
+     * @return Allergy object
+     */
     public Allergy getAlergy(int i){
         return ala.get(i);
     }
 
+    /**
+     * get the size of the allergy ArrayList of that user
+     * @return int size of that user
+     */
     public int size(){
         return ala.size();
     }
 
+    /**
+     * delete user allergy
+     * @param position the index in the ArrayList of the allergy
+     */
     public void remAllergy(int position){
         ala.remove(position);
     }
 
+    /**
+     * <pre>
+     *  get byte code to write nfc tag.
+     *  the structure of the end massages is name . lname , phone , ephone , firstAllergy, secondAllergy, .... ,
+     *  between each field there is comma.
+     *  the last field is null
+     * </pre>
+     * @return byte[]
+     */
     public byte[] getByteCode(){
         try {
             byte[] lang = new byte[0];

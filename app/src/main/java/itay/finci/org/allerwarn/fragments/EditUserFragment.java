@@ -13,6 +13,12 @@ import itay.finci.org.allerwarn.R;
 import itay.finci.org.allerwarn.fragments.MainScreenFragment;
 import itay.finci.org.allerwarn.user.UserList;
 
+/**
+ * <pre>
+ * Created by itay on 19/02/17.
+ * this fragment is used for making a new user
+ * </pre>
+ */
 public class EditUserFragment extends Fragment {
     EditText etName,etLName,etPhone,etEPhone;
     UserList ul;
@@ -31,7 +37,12 @@ public class EditUserFragment extends Fragment {
         etPhone.setText(ul.getActiveUser().getPhone());
         etEPhone.setText(ul.getActiveUser().getePhone());
 
+
         btCommit.setOnClickListener(new View.OnClickListener() {
+            /**
+             * when btCommit is clicked the app is making the new user
+             * @param v the app view
+             */
             @Override
             public void onClick(View v) {
 
