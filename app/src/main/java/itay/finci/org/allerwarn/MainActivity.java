@@ -1,12 +1,15 @@
 package itay.finci.org.allerwarn;
 
+import android.app.Dialog;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.Icon;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
@@ -20,12 +23,14 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.vision.barcode.Barcode;
@@ -38,6 +43,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import itay.finci.org.allerwarn.NFC.NFCManager;
+import itay.finci.org.allerwarn.dialogs.IconMadeBy;
 import itay.finci.org.allerwarn.fragments.AddAlergyFragment;
 import itay.finci.org.allerwarn.fragments.EditUserFragment;
 import itay.finci.org.allerwarn.fragments.MainScreenFragment;
@@ -100,6 +106,15 @@ public class MainActivity extends AppCompatActivity
             nav_Menu.findItem(R.id.nav_addAler).setVisible(false);
             nav_Menu.findItem(R.id.nav_nfcWrite).setVisible(false);
         }
+
+        ImageView ivAppIcon= (ImageView) header.findViewById(R.id.ivAppIcon);
+        ivAppIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                IconMadeBy imb= new IconMadeBy();
+                imb.show(getSupportFragmentManager(), null);
+            }
+        });
     }
 
     @Override
@@ -114,7 +129,8 @@ public class MainActivity extends AppCompatActivity
             nfcIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
             PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, nfcIntent, 0);
             IntentFilter[] intentFiltersArray = new IntentFilter[] {};
-            String[][] techList = new String[][] { { android.nfc.tech.Ndef.class.getName() }, { android.nfc.tech.NdefFormatable.class.getName() } };
+            String[][] techList = new String[][] { { android.nfc.tech.Ndef.class.getName() },
+                    { android.nfc.tech.NdefFormatable.class.getName() } };
             NfcAdapter nfcAdpt = NfcAdapter.getDefaultAdapter(this);
             nfcAdpt.enableForegroundDispatch(this, pendingIntent, intentFiltersArray, techList);
         }
