@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="itay.finci.org.allerwarn"
     android:versionCode="2"
-    android:versionName="0.1.0 build 248">
+    android:versionName="0.1.0 build 250">
 
     <uses-permission android:name="android.permission.NFC" />
     <uses-feature android:name="android.hardware.nfc" android:required="true" />
