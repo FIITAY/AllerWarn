@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:tools="http://schemas.android.com/tools"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:title="App" >
+    <item android:title="">
         <menu >
             <item
                 android:id="@+id/nav_home"
@@ -10,7 +9,7 @@
                 android:title="Home" />
         </menu>
     </item>
-    <item android:title="User Control">
+    <item android:title="">
         <menu>
             <item
                 android:id="@+id/nav_newUser"
@@ -28,7 +27,9 @@
        </menu>
    </item>
 
-   <item android:title="NFC">
+    <item
+        android:title=""
+        android:id="@+id/nav_nfc_menu">
        <menu>
            <item
                android:id="@+id/nav_nfcWrite"

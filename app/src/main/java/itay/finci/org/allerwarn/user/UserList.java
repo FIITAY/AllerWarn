@@ -203,4 +203,8 @@ public class UserList implements  java.io.Serializable{
     public int getIndexOfUser(User u){
         return alu.indexOf(u);
     }
+
+    public ArrayList<User> getAlu() {
+        return alu;
+    }
 }

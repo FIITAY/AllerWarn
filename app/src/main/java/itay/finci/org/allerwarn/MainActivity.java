@@ -1,15 +1,10 @@
 package itay.finci.org.allerwarn;
 
-import android.app.Dialog;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.graphics.drawable.Icon;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
@@ -23,7 +18,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -32,8 +26,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.google.android.gms.vision.barcode.Barcode;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -70,6 +62,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
 
         nfcMger = new NFCManager(this);
         v = findViewById(R.id.drawer_layout);
@@ -136,6 +129,11 @@ public class MainActivity extends AppCompatActivity
         }
         catch(NFCManager.NFCNotSupported nfcnsup) {
             Snackbar.make(v, "NFC not supported", Snackbar.LENGTH_LONG).show();
+            NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+            Menu nav_Menu = navigationView.getMenu();
+//            nav_Menu.findItem(R.id.nav_addAler).setVisible(false);
+//            nav_Menu.findItem(R.id.nav_nfcWrite).setVidisible(false);
+            nav_Menu.findItem(R.id.nav_nfc_menu).setVisible(false);
         }
         catch(NFCManager.NFCNotEnabled nfcnEn) {
             Snackbar.make(v, "NFC Not enabled", Snackbar.LENGTH_LONG).show();
@@ -147,7 +145,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onPause() {
         super.onPause();
-        nfcMger.disableDispatch();
+        //nfcMger.disableDispatch();
     }
 
     /**
@@ -287,12 +285,6 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

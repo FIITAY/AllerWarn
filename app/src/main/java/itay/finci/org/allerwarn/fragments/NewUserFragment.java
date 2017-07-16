@@ -24,6 +24,7 @@ public class NewUserFragment extends Fragment {
     EditText etName,etLName,etPhone,etEPhone;
     private final static int TO_LONG_NAME = 1;
     private final static int EMPTY_EDIT_TEXT = 2;
+    private final static int USER_SAME_TO_ANOTHER = 3;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.new_user_fragment, container, false);
@@ -53,6 +54,17 @@ public class NewUserFragment extends Fragment {
                     notnull = false;
                     BUG = TO_LONG_NAME;
                 }
+
+                for (User u : UserList.getInstance().getAlu()) {
+                    if (u.getName().equals(etName.getText().toString()) &&
+                            u.getlName().equals(etLName.getText().toString()) &&
+                            u.getPhone().equals(etPhone.getText().toString()) &&
+                            u.getePhone().equals(etEPhone.getText().toString())) {
+                        notnull = false;
+                        BUG = USER_SAME_TO_ANOTHER;
+                    }
+                }
+
                 if (notnull) {
                     NavigationView navigationView = (NavigationView) getActivity().findViewById(R.id.nav_view);
                     Menu nav_Menu = navigationView.getMenu();
@@ -70,6 +82,8 @@ public class NewUserFragment extends Fragment {
                         Snackbar.make(v, "You can not enter a empty filed", Snackbar.LENGTH_LONG).show();
                     } else if (BUG == TO_LONG_NAME) {
                         Snackbar.make(v, "The overall length of the user valuables is to long", Snackbar.LENGTH_LONG).show();
+                    } else if (BUG == USER_SAME_TO_ANOTHER) {
+                        Snackbar.make(v, "User is same as another user", Snackbar.LENGTH_LONG).show();
                     } else {
                         Snackbar.make(v, "System bug try again", Snackbar.LENGTH_LONG).show();
                     }

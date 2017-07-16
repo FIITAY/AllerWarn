@@ -1,10 +1,7 @@
 package itay.finci.org.allerwarn.fragments;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.Bitmap;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -16,18 +13,13 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
-
-import com.google.android.gms.vision.barcode.Barcode;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+
 import itay.finci.org.allerwarn.R;
 import itay.finci.org.allerwarn.user.User;
 import itay.finci.org.allerwarn.user.UserAdapter;
@@ -118,6 +110,8 @@ public class MainScreenFragment extends Fragment {
                             NavigationView navigationView = (NavigationView) getActivity().findViewById(R.id.nav_view);
                             Menu nav_Menu = navigationView.getMenu();
                             nav_Menu.findItem(R.id.nav_EditUser).setVisible(false);
+                            nav_Menu.findItem(R.id.nav_addAler).setVisible(false);
+                            nav_Menu.findItem(R.id.nav_nfcWrite).setVisible(false);
                         }
                         return;
                     }

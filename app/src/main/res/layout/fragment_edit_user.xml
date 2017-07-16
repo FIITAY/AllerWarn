@@ -42,14 +42,14 @@
             android:textColor="@android:color/black" />
 
         <EditText
+            android:id="@+id/etLName"
             android:layout_width="198dp"
             android:layout_height="wrap_content"
-            android:inputType="textPersonName"
 
             android:layout_rowWeight="50"
-            android:id="@+id/etLName"
-            android:textSize="16sp"
-            android:hint="name" />
+            android:hint="last name"
+            android:inputType="textPersonName"
+            android:textSize="16sp" />
         <TextView
             android:text="Phone Number:"
             android:layout_width="198dp"
