@@ -1,0 +1,45 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="itay.finci.org.allerwarn.fragments.DetailFragment">
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="top|center_horizontal"
+        android:text="Title"
+        android:textSize="64sp" />
+
+    <Button
+        android:id="@+id/btSetActive"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@null"
+        android:gravity="bottom"
+        android:text="set as active user"
+        android:textColor="#ff0000"
+        android:layout_alignBaseline="@+id/btDelete"
+        android:layout_alignBottom="@+id/btDelete"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="11dp"
+        android:layout_marginEnd="11dp" />
+
+    <Button
+        android:id="@+id/btDelete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="17dp"
+        android:layout_marginLeft="11dp"
+        android:layout_marginStart="11dp"
+        android:background="@null"
+        android:gravity="bottom"
+        android:text="Delete user "
+        android:textColor="#ff0000" />
+
+</RelativeLayout>

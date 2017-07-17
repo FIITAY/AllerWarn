@@ -14,21 +14,17 @@ import itay.finci.org.allerwarn.allergies.Allergy;
  * </pre>
  */
 public class User implements java.io.Serializable {
-    private  String name, lName,phone,ePhone;
+    private String name, lName;
     private ArrayList<Allergy>ala;
 
     /**
      * public constructor to make new user from data(Strings)
      * @param n user name
      * @param ln user last name
-     * @param p user phone
-     * @param ep user emergency phone
      */
-    public User(String n, String ln, String p , String ep) {
+    public User(String n, String ln) {
         name =n;
         lName =ln;
-        phone =p;
-        ePhone =ep;
         ala = new ArrayList<Allergy>();
     }
 
@@ -39,8 +35,6 @@ public class User implements java.io.Serializable {
     public User(User u){
         name =u.getName();
         lName =u.getlName();
-        phone =u.getPhone();
-        ePhone =u.getePhone();
     }
 
     /**
@@ -73,38 +67,6 @@ public class User implements java.io.Serializable {
      */
     public void setlName(String lName) {
         this.lName = lName;
-    }
-
-    /**
-     * get user phone
-     * @return user phone
-     */
-    public String getPhone() {
-        return phone;
-    }
-
-    /**
-     * set user phone
-     * @param phone new user phone
-     */
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    /**
-     * get user emergency phone
-     * @return user emergency phone
-     */
-    public String getePhone() {
-        return ePhone;
-    }
-
-    /**
-     * set user emergency phone
-     * @param ePhone new user emergency phone
-     */
-    public void setePhone(String ePhone) {
-        this.ePhone = ePhone;
     }
 
     /**
@@ -155,15 +117,13 @@ public class User implements java.io.Serializable {
             lang = Locale.getDefault().getLanguage().getBytes("UTF-8");
             byte[] fn = (getName()+',').getBytes("UTF-8"); // Name in UTF-8
             byte[] ln = (getlName()+',').getBytes("UTF-8");
-            byte[] ph1 = (getPhone()+',').getBytes("UTF-8");
-            byte[] ph2 = (getePhone()+',').getBytes("UTF-8");
             String allergies="";
             for (int i = 0; i < size(); i++) {
                 allergies= allergies+getAlergy(i).getId()+",";
             }
             byte[] allergiesbyte= allergies.getBytes("UTF-8");
             int langSize = lang.length;
-            int textLength = fn.length + ln.length + ph1.length + ph2.length + allergiesbyte.length;
+            int textLength = fn.length + ln.length + allergiesbyte.length;
             ByteArrayOutputStream payload = new ByteArrayOutputStream(1 + langSize + textLength);
             payload.write((byte) (langSize & 0x1F));
             payload.write(lang, 0, langSize);
@@ -171,10 +131,6 @@ public class User implements java.io.Serializable {
             payload.write(fn, 0, fn.length);
            // payload.write((byte) (ln.length & 0x1F));
             payload.write(ln,0,ln.length);
-            //payload.write((byte) (ph1.length & 0x1F));
-            payload.write(ph1,0,ph1.length);
-            //payload.write((byte) (ph2.length & 0x1F));
-            payload.write(ph2,0,ph2.length);
             payload.write(allergiesbyte,0,allergiesbyte.length);
             return  payload.toByteArray();
         } catch (UnsupportedEncodingException e) {

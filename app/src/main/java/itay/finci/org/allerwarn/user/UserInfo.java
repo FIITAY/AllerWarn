@@ -10,8 +10,6 @@ package itay.finci.org.allerwarn.user;
 public class UserInfo {
     public String name;
     public String lName;
-    public String phone;
-    public String ePhone;
 
 
     protected static final String NAME_PREFIX = "Name_";

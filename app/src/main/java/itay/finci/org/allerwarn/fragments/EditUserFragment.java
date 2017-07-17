@@ -23,7 +23,7 @@ import itay.finci.org.allerwarn.user.UserList;
  * </pre>
  */
 public class EditUserFragment extends Fragment {
-    EditText etName,etLName,etPhone,etEPhone;
+    EditText etName, etLName;
     UserList ul;
     private final static int TO_LONG_NAME = 1;
     private final static int EMPTY_EDIT_TEXT = 2;
@@ -34,14 +34,10 @@ public class EditUserFragment extends Fragment {
         ul=UserList.getInstance();
         etName = (EditText) v.findViewById(R.id.etName);
         etLName = (EditText) v.findViewById(R.id.etLName);
-        etPhone = (EditText) v.findViewById(R.id.etPhone);
-        etEPhone = (EditText) v.findViewById(R.id.etEPhone);
         Button btCommit = (Button) v.findViewById(R.id.btCommit);
 
         etName.setText(ul.getActiveUser().getName());
         etLName.setText(ul.getActiveUser().getlName());
-        etPhone.setText(ul.getActiveUser().getPhone());
-        etEPhone.setText(ul.getActiveUser().getePhone());
 
 
         btCommit.setOnClickListener(new View.OnClickListener() {
@@ -53,26 +49,21 @@ public class EditUserFragment extends Fragment {
             public void onClick(View v) {
                 boolean notnull = false;
                 int BUG = 0;
-                if (!etName.getText().toString().isEmpty() && !etLName.getText().toString().isEmpty() &&
-                        !etPhone.getText().toString().isEmpty() && !etEPhone.getText().toString().isEmpty()) {
+                if (!etName.getText().toString().isEmpty() && !etLName.getText().toString().isEmpty()) {
                     notnull = true;
                 } else {
                     notnull = false;
                     BUG = EMPTY_EDIT_TEXT;
                 }
                 if (etName.getText().toString().length() +
-                        etLName.getText().toString().length() +
-                        etPhone.getText().toString().length() +
-                        etEPhone.getText().toString().length() >= 90) {
+                        etLName.getText().toString().length() >= 90) {
                     notnull = false;
                     BUG = TO_LONG_NAME;
                 }
 
                 for (User u : UserList.getInstance().getAlu()) {
                     if (u.getName().equals(etName.getText().toString()) &&
-                            u.getlName().equals(etLName.getText().toString()) &&
-                            u.getPhone().equals(etPhone.getText().toString()) &&
-                            u.getePhone().equals(etEPhone.getText().toString())) {
+                            u.getlName().equals(etLName.getText().toString())) {
                         notnull = false;
                         BUG = USER_SAME_TO_ANOTHER;
                     }
@@ -87,8 +78,6 @@ public class EditUserFragment extends Fragment {
 
                     ul.getActiveUser().setName(etName.getText().toString());
                     ul.getActiveUser().setlName(etLName.getText().toString());
-                    ul.getActiveUser().setPhone(etPhone.getText().toString());
-                    ul.getActiveUser().setePhone(etEPhone.getText().toString());
 
                     MainScreenFragment msf = new MainScreenFragment();
                     FragmentChangeListener fc = (FragmentChangeListener) getActivity();

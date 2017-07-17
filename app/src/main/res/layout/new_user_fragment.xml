@@ -50,42 +50,7 @@
             android:hint="last name"
             android:inputType="textPersonName"
             android:textSize="16sp" />
-        <TextView
-            android:text="Phone Number:"
-            android:layout_width="198dp"
-            android:layout_height="wrap_content"
-            android:layout_rowWeight="50"
-            android:id="@+id/textView4"
-            android:textSize="16sp"
-            android:textColor="@android:color/black" />
 
-        <EditText
-            android:layout_width="198dp"
-            android:layout_height="wrap_content"
-
-            android:layout_rowWeight="50"
-            android:id="@+id/etPhone"
-            android:textSize="16sp"
-            android:inputType="phone"
-            android:hint="phone #" />
-
-        <TextView
-            android:text="Emergency Phone number"
-            android:layout_width="198dp"
-            android:layout_height="wrap_content"
-            android:layout_rowWeight="50"
-            android:id="@+id/textView6"
-            android:textSize="16sp"
-            android:textColor="@android:color/black" />
-
-        <EditText
-            android:layout_width="198dp"
-            android:layout_height="wrap_content"
-            android:inputType="phone"
-            android:layout_rowWeight="50"
-            android:id="@+id/etEPhone"
-            android:textSize="16sp"
-            android:hint="phone #" />
     </GridLayout>
 
     <Button

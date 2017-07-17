@@ -1,16 +1,12 @@
 package itay.finci.org.allerwarn.fragments;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -20,6 +16,7 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import itay.finci.org.allerwarn.FragmentChangeListener;
 import itay.finci.org.allerwarn.R;
 import itay.finci.org.allerwarn.user.User;
 import itay.finci.org.allerwarn.user.UserAdapter;
@@ -42,7 +39,7 @@ public class MainScreenFragment extends Fragment {
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         recList.setLayoutManager(llm);
         al =createList(UserList.getInstance().size());
-        ca= new UserAdapter(al, getContext());
+        ca = new UserAdapter(al, getContext(), getActivity());
         recList.setAdapter(ca);
         ca.notifyDataSetChanged();
 
@@ -87,50 +84,16 @@ public class MainScreenFragment extends Fragment {
         @Override
         public void onSwiped(final RecyclerView.ViewHolder viewHolder, int direction) {
             final int position = viewHolder.getAdapterPosition(); //get position which is swipe
-            /**
-             * if swiped right = delete user
-             */
-            if (direction == ItemTouchHelper.RIGHT) {    //if swipe right
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(getContext()); //alert for confirm to delete
-                builder.setMessage("Are you sure to delete?");    //set message
+            if (direction == ItemTouchHelper.LEFT || direction == ItemTouchHelper.RIGHT) { //if swipe left
 
-                builder.setPositiveButton("REMOVE", new DialogInterface.OnClickListener() { //when click on DELETE
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        ca.notifyItemRemoved(position);    //item removed from recylcerview
-                        //list.remove(position);  //then remove item
-                        UserList.getInstance().remove(position);
-                        al.remove(position);
-                        rewrite();
-                        if(UserList.getInstance().size() >0) {
-                            UserList.getInstance().setActiveUserInPosition(0);
-                            ca.notifyDataSetChanged();
-                        }else{
-                            NavigationView navigationView = (NavigationView) getActivity().findViewById(R.id.nav_view);
-                            Menu nav_Menu = navigationView.getMenu();
-                            nav_Menu.findItem(R.id.nav_EditUser).setVisible(false);
-                            nav_Menu.findItem(R.id.nav_addAler).setVisible(false);
-                            nav_Menu.findItem(R.id.nav_nfcWrite).setVisible(false);
-                        }
-                        return;
-                    }
-                }).setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {  //not removing items if cancel is done
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        ca.notifyItemRemoved(position + 1);    //notifies the RecyclerView Adapter that data in adapter has been removed at a particular position.
-                        ca.notifyItemRangeChanged(position, ca.getItemCount());   //notifies the RecyclerView Adapter that positions of element in adapter has been changed from position(removed element index to end of list), please update it.
-                        rewrite();
-                        return;
-                    }
-                }).show();  //show alert dialog
-            }
-            /**
-             * if swiped left = make user active
-             */
-            if(direction == ItemTouchHelper.LEFT){ //if swipe left
-                UserList.getInstance().setActiveUserInPosition(position);
-                ca.notifyDataSetChanged();
+                Bundle arguments = new Bundle();
+                arguments.putString(DetailFragment.ARG_ITEM_ID, UserList.getInstance()
+                        .getUser(position).getName());
+                DetailFragment df = new DetailFragment();
+                df.setArguments(arguments);
+                FragmentChangeListener fc = (FragmentChangeListener) getActivity();
+                fc.replaceFragment(df);
             }
         }
     };
@@ -148,8 +111,6 @@ public class MainScreenFragment extends Fragment {
             User u = UserList.getInstance().getUser(i);
             ci.name = u.getName();
             ci.lName = u.getlName();
-            ci.phone = u.getPhone();
-            ci.ePhone = u.getePhone();
             result.add(ci);
 
         }

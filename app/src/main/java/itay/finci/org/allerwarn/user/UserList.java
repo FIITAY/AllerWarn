@@ -35,11 +35,9 @@ public class UserList implements  java.io.Serializable{
      * make new user from raw data
      * @param n user name
      * @param ln user last name
-     * @param p user phone
-     * @param ep user emergency phone
      */
-    public void add(String n, String ln, String p, String ep){
-        alu.add(new User(n,ln,p,ep));
+    public void add(String n, String ln) {
+        alu.add(new User(n, ln));
     }
 
     /**
@@ -92,11 +90,9 @@ public class UserList implements  java.io.Serializable{
         String[] parts = user.split(",");
         String name=parts[0];
         String lname=parts[1];
-        String phone=parts[2];
-        String ephone=parts[3];
-        User u=new User(name,lname,phone,ephone);
+        User u = new User(name, lname);
         AllergiesList al= AllergiesList.getInstance(cxt);
-        for (int i = 4; i < parts.length; i++) {
+        for (int i = 2; i < parts.length; i++) {
             Allergy a = al.getAller(parts[i]);
             if(null != a){
                 u.addAlergy(a);
@@ -115,7 +111,7 @@ public class UserList implements  java.io.Serializable{
      * @param sa boolean to check if you want the new user active.
      */
     public void add(User u, boolean sa){
-        User i = new User(u.getName(), u.getlName(), u.getPhone(), u.getePhone());
+        User i = new User(u.getName(), u.getlName());
         alu.add(i);
         if(sa){
             setActiveUserInPosition(alu.indexOf(i));
@@ -206,5 +202,14 @@ public class UserList implements  java.io.Serializable{
 
     public ArrayList<User> getAlu() {
         return alu;
+    }
+
+    public User getUser(String name) {
+        for (User u : alu) {
+            if (u.getName() == name) {
+                return u;
+            }
+        }
+        return null;
     }
 }
