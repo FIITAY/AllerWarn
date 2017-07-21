@@ -64,6 +64,8 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
 
+        SecondMainActivity.show = true;
+
         nfcMger = new NFCManager(this);
         v = findViewById(R.id.drawer_layout);
         dialog = new ProgressDialog(MainActivity.this);
@@ -332,6 +334,8 @@ public class MainActivity extends AppCompatActivity
             onNFCwrite();
         }else if( id == R.id.nav_nfcRead){
             onNFCRead();
+        } else if (id == R.id.nav_TestView) {
+            startActivity(new Intent(this, SecondMainActivity.class));
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

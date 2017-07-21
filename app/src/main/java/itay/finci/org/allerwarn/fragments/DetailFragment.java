@@ -22,17 +22,19 @@ import java.io.ObjectOutputStream;
 
 import itay.finci.org.allerwarn.FragmentChangeListener;
 import itay.finci.org.allerwarn.R;
+import itay.finci.org.allerwarn.SecondMainActivity;
 import itay.finci.org.allerwarn.user.User;
 import itay.finci.org.allerwarn.user.UserList;
 
 public class DetailFragment extends Fragment {
     public static final String ARG_ITEM_ID = "item_id";
     User u;
+    View rootView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
+        rootView = inflater.inflate(R.layout.fragment_detail, container, false);
 
         u = UserList.getInstance().getUser(getArguments().getString(ARG_ITEM_ID));
         if (u != null) {
@@ -47,7 +49,6 @@ public class DetailFragment extends Fragment {
         }
         return rootView;
     }
-
 
     private void setButtonsListiners(final View rootView) {
         Button btDelete = (Button) rootView.findViewById(R.id.btDelete);
@@ -106,6 +107,14 @@ public class DetailFragment extends Fragment {
             btSetActiveUser.setTextColor(Color.RED);
         }
 
+        if (!SecondMainActivity.show) {
+            btDelete.setVisibility(View.GONE);
+            btSetActiveUser.setVisibility(View.GONE);
+        } else {
+
+            btDelete.setVisibility(View.VISIBLE);
+            btSetActiveUser.setVisibility(View.VISIBLE);
+        }
     }
 
     private void rewrite() {

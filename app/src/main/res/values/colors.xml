@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#e4e419</color>
-    <color name="colorPrimaryDark">#dfd133</color>
+    <color name="colorPrimary">#E0C035</color>
+    <color name="colorPrimaryDark">#b99f2d</color>
     <color name="colorAccent">#FF4081</color>
-    <color name="bkg_card">#dfd133</color>
+    <color name="bkg_card">#E0C035</color>
 
 </resources>

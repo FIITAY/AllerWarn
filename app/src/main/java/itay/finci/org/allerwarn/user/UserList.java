@@ -45,7 +45,7 @@ public class UserList implements  java.io.Serializable{
      * @param u old user
      */
     public void add(User u){
-        add(u,false);
+        add(u, true);
     }
 
     /**
