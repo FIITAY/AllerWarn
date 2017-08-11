@@ -12,7 +12,7 @@
             android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="WELCOME TO"
+            android:text="Welcome to "
             android:gravity="center"
             android:textColor="@android:color/white"
             android:layout_gravity="top|center"
@@ -23,12 +23,24 @@
 
         <ImageView
             android:id="@+id/computer"
-            android:layout_width="273dp"
-            android:layout_height="264dp"
+            android:layout_width="304dp"
+            android:layout_height="237dp"
             android:layout_gravity="center"
-            android:scaleType="fitXY"
             android:src="@mipmap/ic_launcher" />
 
+        <TextView
+            android:id="@+id/description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Swipe to the Left to make your first user!"
+            android:gravity="center"
+            android:textColor="@android:color/white"
+            android:layout_gravity="bottom|center"
+            android:maxEms="18"
+            android:layout_marginLeft="32dp"
+            android:layout_marginRight="32dp"
+            android:layout_marginBottom="32dp"
+            android:textSize="20sp" />
 
     </FrameLayout>
 

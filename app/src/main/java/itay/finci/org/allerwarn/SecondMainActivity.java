@@ -54,6 +54,11 @@ public class SecondMainActivity extends AppCompatActivity
         show = true;
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
     private ViewPager mViewPager;
 
     @Override
@@ -75,6 +80,7 @@ public class SecondMainActivity extends AppCompatActivity
             this.replaceFragment(df);
             BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
             navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+            navigation.setSelectedItemId(R.id.navigation_dashboard);
         }
     }
 

@@ -4,13 +4,52 @@
     android:layout_height="match_parent"
     tools:context="itay.finci.org.allerwarn.fragments.DetailFragment">
 
-    <TextView
-        android:id="@+id/title"
+    <ViewSwitcher
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="top|center_horizontal"
-        android:text="Title"
-        android:textSize="64sp" />
+        android:id="@+id/switcher">
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/btSetActive"
+            android:layout_alignEnd="@+id/btSetActive"
+            android:layout_alignRight="@+id/btSetActive"
+            android:layout_marginBottom="83dp"
+            android:gravity="top|center_horizontal"
+            android:text="Title"
+            android:textSize="64sp" />
+
+        <GridLayout
+            android:rowCount="1"
+            android:columnCount="2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/etName"
+                android:layout_width="187dp"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:layout_column="0"
+                android:inputType="textPersonName"
+                android:hint="First"
+                android:textSize="32sp" />
+
+            <EditText
+                android:id="@+id/etLname"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:layout_column="1"
+                android:hint="surname"
+                android:textSize="32sp"
+                android:inputType="textPersonName" />
+        </GridLayout>
+    </ViewSwitcher>
+
 
     <Button
         android:id="@+id/btSetActive"
@@ -41,5 +80,20 @@
         android:gravity="bottom"
         android:text="Delete user "
         android:textColor="#ff0000" />
+
+    <Button
+        android:id="@+id/btDone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@null"
+        android:gravity="bottom|center_horizontal"
+        android:text="Edit User "
+        android:textColor="#ff0000"
+        android:layout_alignBaseline="@+id/btSetActive"
+        android:layout_alignBottom="@+id/btSetActive"
+        android:layout_toRightOf="@+id/btDelete"
+        android:layout_toEndOf="@+id/btDelete"
+        android:layout_marginLeft="30dp"
+        android:layout_marginStart="30dp" />
 
 </RelativeLayout>

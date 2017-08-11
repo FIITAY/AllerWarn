@@ -62,8 +62,8 @@ public class EditUserFragment extends Fragment {
                 }
 
                 for (User u : UserList.getInstance().getAlu()) {
-                    if (u.getName().equals(etName.getText().toString()) &&
-                            u.getlName().equals(etLName.getText().toString())) {
+                    if (u.getName().equalsIgnoreCase(etName.getText().toString()) &&
+                            u.getlName().equalsIgnoreCase(etLName.getText().toString())) {
                         notnull = false;
                         BUG = USER_SAME_TO_ANOTHER;
                     }

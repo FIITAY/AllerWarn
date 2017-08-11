@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="itay.finci.org.allerwarn"
     android:versionCode="5"
-    android:versionName="0.1.0 build 408">
+    android:versionName="0.1.0 build 491">
 
     <uses-permission android:name="android.permission.NFC" />
 
@@ -30,9 +30,8 @@
         </activity>
         <activity
             android:name=".SecondMainActivity"
-            android:label="@string/title_activity_second_main"></activity>
-        <activity android:name=".intro.IntroActivity">
-        </activity>
+            android:label="@string/title_activity_second_main" />
+        <activity android:name=".intro.IntroActivity"></activity>
     </application>
 
 </manifest>
