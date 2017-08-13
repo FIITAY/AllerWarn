@@ -1,6 +1,7 @@
 package itay.finci.org.allerwarn.intro;
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -10,6 +11,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 
 import itay.finci.org.allerwarn.R;
 import itay.finci.org.allerwarn.SecondMainActivity;
@@ -116,6 +121,7 @@ public class IntroFragment extends Fragment {
                 if (notnull) {
                     User u = new User(etName.getText().toString(), etLname.getText().toString());
                     UserList.getInstance().add(u);
+                    rewrite();
                     startActivity(new Intent(getContext(), SecondMainActivity.class));
                 } else {
                     if (BUG == EMPTY_EDIT_TEXT) {
@@ -132,6 +138,20 @@ public class IntroFragment extends Fragment {
                 }
             }
         });
+    }
+
+    private void rewrite() {
+        try {
+            FileOutputStream fileOut = getActivity().openFileOutput("UserList.ser", Context.MODE_PRIVATE);
+            ObjectOutputStream out = new ObjectOutputStream(fileOut);
+            UserList u = UserList.getInstance();
+            UserList.getInstance().write(out);
+            out.close();
+            fileOut.close();
+            //System.out.printf("Serialized data is saved in /tmp/employee.ser");
+        } catch (IOException i) {
+            i.printStackTrace();
+        }
     }
 
     @Override

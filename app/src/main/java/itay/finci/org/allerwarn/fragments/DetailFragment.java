@@ -45,7 +45,7 @@ public class DetailFragment extends Fragment {
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_detail, container, false);
 
-        u = UserList.getInstance().getUser(getArguments().getString(ARG_ITEM_ID));
+        u = UserList.getInstance().getActiveUser();
         if (u != null) {
 
             tvTitle = (TextView) rootView.findViewById(R.id.title);
@@ -122,6 +122,7 @@ public class DetailFragment extends Fragment {
                     etName.setText(u.getName());
                     etLname.setText(u.getlName());
                     switcher.showNext();
+                    rewrite();
                 } else if (state == 2) {
                     boolean notnull = false;
                     int BUG = 0;
@@ -135,14 +136,6 @@ public class DetailFragment extends Fragment {
                             etLname.getText().toString().length() >= 90) {
                         notnull = false;
                         BUG = TO_LONG_NAME;
-                    }
-
-                    for (User u : UserList.getInstance().getAlu()) {
-                        if (u.getName().equalsIgnoreCase(etName.getText().toString()) &&
-                                u.getlName().equalsIgnoreCase(etLname.getText().toString())) {
-                            notnull = false;
-                            BUG = USER_SAME_TO_ANOTHER;
-                        }
                     }
                     if (etName.getText().toString().equalsIgnoreCase(etLname.getText().toString())) {
                         notnull = false;
