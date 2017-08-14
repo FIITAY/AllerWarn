@@ -52,36 +52,6 @@
 
 
     <Button
-        android:id="@+id/btSetActive"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@null"
-        android:gravity="bottom"
-        android:text="set as active user"
-        android:textColor="#ff0000"
-        android:layout_alignBaseline="@+id/btDelete"
-        android:layout_alignBottom="@+id/btDelete"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginRight="11dp"
-        android:layout_marginEnd="11dp" />
-
-    <Button
-        android:id="@+id/btDelete"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginBottom="17dp"
-        android:layout_marginLeft="11dp"
-        android:layout_marginStart="11dp"
-        android:background="@null"
-        android:gravity="bottom"
-        android:text="Delete user "
-        android:textColor="#ff0000" />
-
-    <Button
         android:id="@+id/btDone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -89,11 +59,119 @@
         android:gravity="bottom|center_horizontal"
         android:text="Edit User "
         android:textColor="#ff0000"
-        android:layout_alignBaseline="@+id/btSetActive"
-        android:layout_alignBottom="@+id/btSetActive"
-        android:layout_toRightOf="@+id/btDelete"
-        android:layout_toEndOf="@+id/btDelete"
-        android:layout_marginLeft="30dp"
-        android:layout_marginStart="30dp" />
+        android:layout_marginBottom="23dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="136dp"
+        android:layout_marginStart="136dp" />
+
+    <TextView
+        android:id="@+id/tvAllergicTo"
+        android:layout_width="wrap_content"
+        android:layout_column="0"
+        android:layout_columnWeight="1"
+        android:layout_row="0"
+        android:text="Allergic to:"
+        android:textSize="32sp"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/gridLayout"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="14dp" />
+
+    <GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:columnCount="2"
+        android:rowCount="8"
+        android:listSelector="@android:color/transparent"
+        android:stretchMode="columnWidth"
+        android:layout_below="@+id/switcher"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:id="@+id/gridLayout">
+
+        <TextView
+            android:id="@+id/tvMilk"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_column="0"
+            android:layout_columnWeight="1"
+            android:layout_row="0"
+            android:text="@string/Milk"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/tvEgg"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_column="0"
+            android:layout_columnWeight="1"
+            android:layout_row="1"
+            android:text="@string/Egg"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/tvPeanuts"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_column="0"
+            android:layout_columnWeight="1"
+            android:layout_row="2"
+            android:text="@string/Peanuts"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/tvTreeNuts"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_column="0"
+            android:layout_columnWeight="1"
+            android:layout_row="3"
+            android:text="@string/Tree_nuts"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/tvFish"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_column="0"
+            android:layout_columnWeight="1"
+            android:layout_row="4"
+            android:text="@string/Fish"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/tvShellFish"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_column="0"
+            android:layout_columnWeight="1"
+            android:layout_row="5"
+            android:text="@string/Shellfish"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/tvWheat"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_column="0"
+            android:layout_columnWeight="1"
+            android:layout_row="6"
+            android:text="@string/Wheat"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/tvSoy"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_column="0"
+            android:layout_columnWeight="1"
+            android:layout_row="7"
+            android:text="@string/Soy"
+            android:textSize="24sp" />
+
+    </GridLayout>
 
 </RelativeLayout>

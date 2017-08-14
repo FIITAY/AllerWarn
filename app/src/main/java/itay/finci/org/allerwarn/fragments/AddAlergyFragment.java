@@ -1,28 +1,20 @@
 package itay.finci.org.allerwarn.fragments;
 
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
+import android.widget.Switch;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import java.util.List;
 
+import itay.finci.org.allerwarn.MainActivity;
 import itay.finci.org.allerwarn.R;
 import itay.finci.org.allerwarn.allergies.AllergiesList;
 import itay.finci.org.allerwarn.allergies.Allergy;
-import itay.finci.org.allerwarn.allergies.AllergyAdapter;
-import itay.finci.org.allerwarn.allergies.AllergyInfo;
 import itay.finci.org.allerwarn.user.User;
 import itay.finci.org.allerwarn.user.UserList;
 
@@ -35,123 +27,189 @@ import itay.finci.org.allerwarn.user.UserList;
  * </pre>
  */
 public class AddAlergyFragment extends Fragment {
-    AllergyAdapter ca;
-    List<AllergyInfo> al;
     User active;
     AllergiesList allergiesList;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_add_alergy, container, false);
-        RecyclerView recList = (RecyclerView) v.findViewById(R.id.cardList2);
-        allergiesList = AllergiesList.getInstance(getActivity().getApplicationContext());
-
-        LinearLayoutManager llm = new LinearLayoutManager(getContext());
-        llm.setOrientation(LinearLayoutManager.VERTICAL);
-        recList.setLayoutManager(llm);
-        al =createList(8);
-        ca= new AllergyAdapter(al, getContext());
-        recList.setAdapter(ca);
-        ca.notifyDataSetChanged();
-
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
-        itemTouchHelper.attachToRecyclerView(recList); //set swipe to recylcerview
-
         active = UserList.getInstance().getActiveUser();
 
+        switchSetup(v);
+
         return v;
+    }
+
+    private void switchSetup(View v) {
+
+        boolean[] hasAllergy = new boolean[8];
+        ArrayList<Allergy> ala = active.getAla();
+        for (Allergy a : ala) {
+            for (int i = 0; i < AllergiesList.getInstance(getContext()).getAla().size(); i++) {
+
+                if (a.getId() == AllergiesList.getInstance(getContext()).getAller(i).getId()) {
+                    hasAllergy[i] = true;
+                }
+            }
+        }
+
+        Switch shMilk = (Switch) v.findViewById(R.id.shMilk);
+        if (hasAllergy[AllergiesList.getInstance(getContext()).getAller("Milk").getId() - 1]) {
+            shMilk.setChecked(true);
+        } else {
+            shMilk.setChecked(false);
+        }
+        shMilk.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    active.addAlergy(AllergiesList.getInstance(getContext()).getAller("Milk"));
+                    rewrite();
+                } else {
+                    active.remAllergy(AllergiesList.getInstance(getContext()).getAller("Milk"));
+                    rewrite();
+                }
+            }
+        });
+        Switch shEgg = (Switch) v.findViewById(R.id.shEgg);
+        if (hasAllergy[AllergiesList.getInstance(getContext()).getAller("Egg").getId() - 1]) {
+            shEgg.setChecked(true);
+        } else {
+            shEgg.setChecked(false);
+        }
+        shEgg.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    active.addAlergy(AllergiesList.getInstance(getContext()).getAller("Egg"));
+                    rewrite();
+                } else {
+                    active.remAllergy(AllergiesList.getInstance(getContext()).getAller("Egg"));
+                    rewrite();
+                }
+            }
+        });
+
+        Switch shPeanuts = (Switch) v.findViewById(R.id.shPeanuts);
+        if (hasAllergy[AllergiesList.getInstance(getContext()).getAller("Peanuts").getId() - 1]) {
+            shPeanuts.setChecked(true);
+        } else {
+            shPeanuts.setChecked(false);
+        }
+        shPeanuts.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    active.addAlergy(AllergiesList.getInstance(getContext()).getAller("Peanuts"));
+                    rewrite();
+                } else {
+                    active.remAllergy(AllergiesList.getInstance(getContext()).getAller("Peanuts"));
+                    rewrite();
+                }
+            }
+        });
+
+        Switch shTreeNuts = (Switch) v.findViewById(R.id.shTreeNuts);
+        if (hasAllergy[AllergiesList.getInstance(getContext()).getAller("Tree nuts").getId() - 1]) {
+            shTreeNuts.setChecked(true);
+        } else {
+            shTreeNuts.setChecked(false);
+        }
+        shTreeNuts.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    active.addAlergy(AllergiesList.getInstance(getContext()).getAller("Tree nuts"));
+                    rewrite();
+                } else {
+                    active.remAllergy(AllergiesList.getInstance(getContext()).getAller("Tree nuts"));
+                    rewrite();
+                }
+            }
+        });
+
+        Switch shFish = (Switch) v.findViewById(R.id.shFish);
+        if (hasAllergy[AllergiesList.getInstance(getContext()).getAller("Fish").getId() - 1]) {
+            shFish.setChecked(true);
+        } else {
+            shFish.setChecked(false);
+        }
+        shFish.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    active.addAlergy(AllergiesList.getInstance(getContext()).getAller("Fish"));
+                    rewrite();
+                } else {
+                    active.remAllergy(AllergiesList.getInstance(getContext()).getAller("Fish"));
+                    rewrite();
+                }
+            }
+        });
+
+        Switch shShellFish = (Switch) v.findViewById(R.id.shShellFish);
+        if (hasAllergy[AllergiesList.getInstance(getContext()).getAller("Shellfish").getId() - 1]) {
+            shShellFish.setChecked(true);
+        } else {
+            shShellFish.setChecked(false);
+        }
+        shShellFish.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    active.addAlergy(AllergiesList.getInstance(getContext()).getAller("Shellfish"));
+                    rewrite();
+                } else {
+                    active.remAllergy(AllergiesList.getInstance(getContext()).getAller("Shellfish"));
+                    rewrite();
+                }
+            }
+        });
+
+
+        Switch shWheat = (Switch) v.findViewById(R.id.shWheat);
+        if (hasAllergy[AllergiesList.getInstance(getContext()).getAller("Wheat").getId() - 1]) {
+            shWheat.setChecked(true);
+        } else {
+            shWheat.setChecked(false);
+        }
+        shWheat.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    active.addAlergy(AllergiesList.getInstance(getContext()).getAller("Wheat"));
+                    rewrite();
+                } else {
+                    active.remAllergy(AllergiesList.getInstance(getContext()).getAller("Wheat"));
+                    rewrite();
+                }
+            }
+        });
+
+        Switch shSoy = (Switch) v.findViewById(R.id.shSoy);
+        if (hasAllergy[AllergiesList.getInstance(getContext()).getAller("Soy").getId() - 1]) {
+            shSoy.setChecked(true);
+        } else {
+            shSoy.setChecked(false);
+        }
+        shSoy.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    active.addAlergy(AllergiesList.getInstance(getContext()).getAller("Soy"));
+                    rewrite();
+                } else {
+                    active.remAllergy(AllergiesList.getInstance(getContext()).getAller("Soy"));
+                    rewrite();
+                }
+            }
+        });
+
     }
 
     /**
      * use to write to the user file after you change something
      */
-    private void rewrite(){
-        try {
-            FileOutputStream fileOut = getActivity().openFileOutput("UserList.ser", Context.MODE_PRIVATE);
-            ObjectOutputStream out = new ObjectOutputStream(fileOut);
-            UserList u= UserList.getInstance();
-            UserList.getInstance().write(out);
-            out.close();
-            fileOut.close();
-            //System.out.printf("Serialized data is saved in /tmp/employee.ser");
-        }catch(IOException i) {
-            i.printStackTrace();
-        }
+    private void rewrite() {
+        MainActivity.rewrite();
     }
-
-    /**
-     * listiner for swiping left or right the objects.
-     */
-    ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
-        @Override
-        public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-            return false;
-        }
-
-        /**
-         * listine for swiping
-         * @param viewHolder the RecyclerView
-         * @param direction left or right
-         */
-        @Override
-        public void onSwiped(final RecyclerView.ViewHolder viewHolder, int direction) {
-            final int position = viewHolder.getAdapterPosition(); //get position which is swipe
-            /**
-             * if direction is right removing the allergy
-             */
-            if (direction == ItemTouchHelper.RIGHT) {    //if swipe right
-                Allergy a = allergiesList.getAller(position);
-                for (int i = 0; i < active.size(); i++) {
-                    Allergy as = active.getAlergy(i);
-                    if(as.getId() == a.getId()){
-                        active.remAllergy(i);
-                        rewrite();
-                        ca.notifyDataSetChanged();
-                        return;
-                    }
-                }
-                ca.notifyDataSetChanged();
-            }
-            /**
-             * if direction is left adding the allergy
-             */
-            if(direction == ItemTouchHelper.LEFT){ //if swipe left
-                Allergy a = allergiesList.getAller(position);
-                System.out.println("alergy Id= " + a.getId());
-                for (int i = 0; i < active.size(); i++) {
-                    Allergy as = active.getAlergy(i);
-                    System.out.println("user's alergy = "+as.getId());
-                    if(as.getId() == a.getId()){
-                        ca.notifyDataSetChanged();
-                        return;
-                    }
-                }
-                active.addAlergy(new Allergy(a));
-                rewrite();
-                ca.notifyDataSetChanged();
-            }
-        }
-    };
-
-    /**
-     * user for making the adapter that shows in the RecyclerView
-     * @param size amount of items
-     * @return list that shows in the adapter
-     */
-    private List<AllergyInfo> createList(int size) {
-
-        List<AllergyInfo> result = new ArrayList<AllergyInfo>();
-        for (int i=0; i < size; i++) {
-            AllergyInfo ci = new AllergyInfo();
-            Allergy u = allergiesList.getAller(i);
-            ci.name = u.getName();
-            ci.lName = " ";
-            ci.phone = " ";
-            ci.ePhone = " ";
-            ci.id = u.getId();
-            result.add(ci);
-        }
-
-        return result;
-    }
-
 }

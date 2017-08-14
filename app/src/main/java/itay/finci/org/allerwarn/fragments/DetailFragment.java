@@ -1,16 +1,10 @@
 package itay.finci.org.allerwarn.fragments;
 
 
-import android.content.Context;
-import android.content.DialogInterface;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -18,13 +12,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 
-import itay.finci.org.allerwarn.FragmentChangeListener;
+import itay.finci.org.allerwarn.MainActivity;
 import itay.finci.org.allerwarn.R;
-import itay.finci.org.allerwarn.SecondMainActivity;
+import itay.finci.org.allerwarn.allergies.AllergiesList;
+import itay.finci.org.allerwarn.allergies.Allergy;
 import itay.finci.org.allerwarn.user.User;
 import itay.finci.org.allerwarn.user.UserList;
 
@@ -54,60 +47,77 @@ public class DetailFragment extends Fragment {
 
             setButtonsListiners(rootView);
 
+            setTextViews(rootView);
+
 
         }
         return rootView;
     }
 
+    private void setTextViews(View rootView) {
+
+        boolean[] hasAllergy = new boolean[8];
+        ArrayList<Allergy> ala = UserList.getInstance().getActiveUser().getAla();
+        for (Allergy a : ala) {
+            for (int i = 0; i < AllergiesList.getInstance(getContext()).getAla().size(); i++) {
+
+                if (a.getId() == AllergiesList.getInstance(getContext()).getAller(i).getId()) {
+                    hasAllergy[i] = true;
+                }
+            }
+        }
+        TextView tvMilk = (TextView) rootView.findViewById(R.id.tvMilk);
+        if (hasAllergy[AllergiesList.getInstance(getContext()).getAller("Milk").getId() - 1]) {
+            tvMilk.setVisibility(View.VISIBLE);
+        } else {
+            tvMilk.setVisibility(View.GONE);
+        }
+        TextView tvEgg = (TextView) rootView.findViewById(R.id.tvEgg);
+        if (hasAllergy[AllergiesList.getInstance(getContext()).getAller("Egg").getId() - 1]) {
+            tvEgg.setVisibility(View.VISIBLE);
+        } else {
+            tvEgg.setVisibility(View.GONE);
+        }
+        TextView tvPeanuts = (TextView) rootView.findViewById(R.id.tvPeanuts);
+        if (hasAllergy[AllergiesList.getInstance(getContext()).getAller("Peanuts").getId() - 1]) {
+            tvPeanuts.setVisibility(View.VISIBLE);
+        } else {
+            tvPeanuts.setVisibility(View.GONE);
+        }
+        TextView tvTreeNuts = (TextView) rootView.findViewById(R.id.tvTreeNuts);
+        if (hasAllergy[AllergiesList.getInstance(getContext()).getAller("Tree nuts").getId() - 1]) {
+            tvTreeNuts.setVisibility(View.VISIBLE);
+        } else {
+            tvTreeNuts.setVisibility(View.GONE);
+        }
+        TextView tvFish = (TextView) rootView.findViewById(R.id.tvFish);
+        if (hasAllergy[AllergiesList.getInstance(getContext()).getAller("Fish").getId() - 1]) {
+            tvFish.setVisibility(View.VISIBLE);
+        } else {
+            tvFish.setVisibility(View.GONE);
+        }
+        TextView tvShellFish = (TextView) rootView.findViewById(R.id.tvShellFish);
+        if (hasAllergy[AllergiesList.getInstance(getContext()).getAller("Shellfish").getId() - 1]) {
+            tvShellFish.setVisibility(View.VISIBLE);
+        } else {
+            tvShellFish.setVisibility(View.GONE);
+        }
+        TextView tvWheat = (TextView) rootView.findViewById(R.id.tvWheat);
+        if (hasAllergy[AllergiesList.getInstance(getContext()).getAller("Wheat").getId() - 1]) {
+            tvWheat.setVisibility(View.VISIBLE);
+        } else {
+            tvWheat.setVisibility(View.GONE);
+        }
+        TextView tvSoy = (TextView) rootView.findViewById(R.id.tvSoy);
+        if (hasAllergy[AllergiesList.getInstance(getContext()).getAller("Soy").getId() - 1]) {
+            tvSoy.setVisibility(View.VISIBLE);
+        } else {
+            tvSoy.setVisibility(View.GONE);
+        }
+
+    }
+
     private void setButtonsListiners(final View rootView) {
-        Button btDelete = (Button) rootView.findViewById(R.id.btDelete);
-        btDelete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getContext()); //alert for confirm to delete
-                builder.setMessage("Are you sure to delete?");    //set message
-
-                builder.setPositiveButton("REMOVE", new DialogInterface.OnClickListener() { //when click on DELETE
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        UserList.getInstance().remove(UserList.getInstance().getIndexOfUser(u));
-                        rewrite();
-                        if (UserList.getInstance().size() > 0) {
-                            UserList.getInstance().setActiveUserInPosition(0);
-                        } else {
-                            NavigationView navigationView = (NavigationView) getActivity().findViewById(R.id.nav_view);
-                            Menu nav_Menu = navigationView.getMenu();
-                            nav_Menu.findItem(R.id.nav_EditUser).setVisible(false);
-                            nav_Menu.findItem(R.id.nav_addAler).setVisible(false);
-                            nav_Menu.findItem(R.id.nav_nfcWrite).setVisible(false);
-                        }
-                        MainScreenFragment msf = new MainScreenFragment();
-                        FragmentChangeListener fc = (FragmentChangeListener) getActivity();
-                        fc.replaceFragment(msf);
-                        return;
-                    }
-                }).setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {  //not removing items if cancel is done
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        rewrite();
-                        return;
-                    }
-                }).show();  //show alert dialog
-            }
-        });
-
-        Button btSetActiveUser = (Button) rootView.findViewById(R.id.btSetActive);
-        btSetActiveUser.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                UserList.getInstance().setActiveUserInPosition(UserList.getInstance().getIndexOfUser(u));
-                Snackbar.make(v, "User set as active ", Snackbar.LENGTH_SHORT).show();
-                v.findViewById(R.id.btSetActive).setEnabled(false);
-                Button temp = (Button) rootView.findViewById(R.id.btSetActive);
-                temp.setEnabled(false);
-                temp.setTextColor(Color.GRAY);
-            }
-        });
 
         final Button btEditUser = (Button) rootView.findViewById(R.id.btDone);
         btEditUser.setOnClickListener(new View.OnClickListener() {
@@ -166,36 +176,9 @@ public class DetailFragment extends Fragment {
 
             }
         });
-        if (UserList.getInstance().getActiveUser().getName().equals(u.getName())) {
-            btSetActiveUser.setEnabled(false);
-            btSetActiveUser.setTextColor(Color.GRAY);
-        } else {
-            btSetActiveUser.setEnabled(true);
-            btSetActiveUser.setTextColor(Color.RED);
-        }
-
-        if (!SecondMainActivity.show) {
-            btDelete.setVisibility(View.INVISIBLE);
-            btSetActiveUser.setVisibility(View.INVISIBLE);
-            btEditUser.setVisibility(View.VISIBLE);
-        } else {
-            btEditUser.setVisibility(View.GONE);
-            btDelete.setVisibility(View.VISIBLE);
-            btSetActiveUser.setVisibility(View.VISIBLE);
-        }
     }
 
     private void rewrite() {
-        try {
-            FileOutputStream fileOut = getActivity().openFileOutput("UserList.ser", Context.MODE_PRIVATE);
-            ObjectOutputStream out = new ObjectOutputStream(fileOut);
-            UserList u = UserList.getInstance();
-            UserList.getInstance().write(out);
-            out.close();
-            fileOut.close();
-            //System.out.printf("Serialized data is saved in /tmp/employee.ser");
-        } catch (IOException i) {
-            i.printStackTrace();
-        }
+        MainActivity.rewrite();
     }
 }

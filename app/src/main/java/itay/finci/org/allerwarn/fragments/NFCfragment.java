@@ -8,8 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import itay.finci.org.allerwarn.MainActivity;
 import itay.finci.org.allerwarn.R;
-import itay.finci.org.allerwarn.SecondMainActivity;
 import itay.finci.org.allerwarn.user.UserList;
 
 /**
@@ -30,16 +30,16 @@ public class NFCfragment extends Fragment {
         btRead.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SecondMainActivity.message = null;
-                SecondMainActivity.ReadNFC(getContext());
+                MainActivity.message = null;
+                MainActivity.ReadNFC();
             }
         });
 
         btWrite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SecondMainActivity.message = SecondMainActivity.nfcMger.createTextMessage(UserList.getInstance().getActiveUser().getByteCode());
-                SecondMainActivity.ReadNFC(getContext());
+                MainActivity.message = MainActivity.nfcMger.createTextMessage(UserList.getInstance().getActiveUser().getByteCode());
+                MainActivity.ReadNFC();
             }
         });
 

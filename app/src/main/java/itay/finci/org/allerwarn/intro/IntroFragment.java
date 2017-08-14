@@ -16,8 +16,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 
+import itay.finci.org.allerwarn.MainActivity;
 import itay.finci.org.allerwarn.R;
-import itay.finci.org.allerwarn.SecondMainActivity;
 import itay.finci.org.allerwarn.user.User;
 import itay.finci.org.allerwarn.user.UserList;
 
@@ -106,23 +106,15 @@ public class IntroFragment extends Fragment {
                     notnull = false;
                     BUG = TO_LONG_NAME;
                 }
-
-                for (User u : UserList.getInstance().getAlu()) {
-                    if (u.getName().equalsIgnoreCase(etName.getText().toString()) &&
-                            u.getlName().equalsIgnoreCase(etLname.getText().toString())) {
-                        notnull = false;
-                        BUG = USER_SAME_TO_ANOTHER;
-                    }
-                }
                 if (etName.getText().toString().equalsIgnoreCase(etLname.getText().toString())) {
                     notnull = false;
                     BUG = TWO_FILDS_SAME;
                 }
                 if (notnull) {
                     User u = new User(etName.getText().toString(), etLname.getText().toString());
-                    UserList.getInstance().add(u);
+                    UserList.getInstance().setActiveUser(u);
                     rewrite();
-                    startActivity(new Intent(getContext(), SecondMainActivity.class));
+                    startActivity(new Intent(getContext(), MainActivity.class));
                 } else {
                     if (BUG == EMPTY_EDIT_TEXT) {
                         Snackbar.make(v, "You can not enter a empty filed", Snackbar.LENGTH_LONG).show();

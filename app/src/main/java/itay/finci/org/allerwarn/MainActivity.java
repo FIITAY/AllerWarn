@@ -4,156 +4,191 @@ import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.nfc.tech.Ndef;
 import android.os.Bundle;
-import android.support.design.widget.NavigationView;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
 
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
 import java.util.Arrays;
 
 import itay.finci.org.allerwarn.NFC.NFCManager;
-import itay.finci.org.allerwarn.dialogs.IconMadeBy;
 import itay.finci.org.allerwarn.fragments.AddAlergyFragment;
-import itay.finci.org.allerwarn.fragments.EditUserFragment;
-import itay.finci.org.allerwarn.fragments.MainScreenFragment;
-import itay.finci.org.allerwarn.fragments.NewUserFragment;
-import itay.finci.org.allerwarn.user.User;
+import itay.finci.org.allerwarn.fragments.DetailFragment;
+import itay.finci.org.allerwarn.fragments.NFCfragment;
+import itay.finci.org.allerwarn.intro.IntroActivity;
 import itay.finci.org.allerwarn.user.UserList;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener ,FragmentChangeListener{
-    TextView tvVersion;
-    private NdefMessage message = null;
-    private NFCManager nfcMger;
-    private ProgressDialog dialog;
+        implements FragmentChangeListener {
+
+    public static boolean show = true;
+    public static NdefMessage message = null;
+    public static NFCManager nfcMger;
+    public static ProgressDialog dialog;
     Tag currentTag;
     private View v;
+    int NFCSTATUS = 0;
 
-    /**
-     * setting the nfcManager,the progress dialog, reading , and fragment
-     * @param savedInstanceState automatic get
-     */
+
+    private final static int NFC_NOT_SUPPORTED = 1;
+    private final static int NFC_NOT_ENABLED = 2;
+
+    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
+            = new BottomNavigationView.OnNavigationItemSelectedListener() {
+
+        @Override
+        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            switch (item.getItemId()) {
+                case R.id.navigation_home:
+                    AddAlergyFragment aaf = new AddAlergyFragment();
+                    replaceFragment(aaf);
+                    return true;
+                case R.id.navigation_dashboard:
+                    DetailFragment detailFragment = new DetailFragment();
+                    replaceFragment(detailFragment);
+                    return true;
+                case R.id.navigation_notifications:
+                    switch (NFCSTATUS) {
+                        case 0:
+                            NFCfragment nfcfragment = new NFCfragment();
+                            replaceFragment(nfcfragment);
+                            break;
+                        case NFC_NOT_SUPPORTED:
+                            Snackbar.make(getWindow().getDecorView(), "NFC is not supported on your phone", Snackbar.LENGTH_LONG).show();
+                            break;
+                        case NFC_NOT_ENABLED:
+                            Snackbar.make(getWindow().getDecorView(), "NFC is not enabled", Snackbar.LENGTH_LONG).show();
+                            break;
+                    }
+                    return true;
+            }
+            return false;
+        }
+
+    };
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-
-        SecondMainActivity.show = true;
-
-        nfcMger = new NFCManager(this);
-        v = findViewById(R.id.drawer_layout);
-        dialog = new ProgressDialog(MainActivity.this);
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();
-
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-        View header=navigationView.getHeaderView(0);
-        tvVersion= (TextView)header.findViewById(R.id.tvVersion);
-        setVersionCodeInTV();
-
-        read();
-
-        if(findViewById(R.id.fragment_cointainer) != null){
-
-            if(savedInstanceState != null){
-                return;
-            }
-
-            MainScreenFragment msf = new MainScreenFragment();
-
-            getSupportFragmentManager().beginTransaction().add(R.id.fragment_cointainer, msf, null).commit();
-        }
-        UserList ul = UserList.getInstance();
-        if(ul.size() <1){
-            Menu nav_Menu = navigationView.getMenu();
-            nav_Menu.findItem(R.id.nav_EditUser).setVisible(false);
-            nav_Menu.findItem(R.id.nav_addAler).setVisible(false);
-            nav_Menu.findItem(R.id.nav_nfcWrite).setVisible(false);
-        }
-
-        ImageView ivAppIcon= (ImageView) header.findViewById(R.id.ivAppIcon);
-        ivAppIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                IconMadeBy imb= new IconMadeBy();
-                imb.show(getSupportFragmentManager(), null);
-            }
-        });
+    protected void onStart() {
+        super.onStart();
+        show = false;
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-
-        try {
-            nfcMger.verifyNFC();
-            //nfcMger.enableDispatch();
-
-            Intent nfcIntent = new Intent(this, getClass());
-            nfcIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, nfcIntent, 0);
-            IntentFilter[] intentFiltersArray = new IntentFilter[] {};
-            String[][] techList = new String[][] { { android.nfc.tech.Ndef.class.getName() },
-                    { android.nfc.tech.NdefFormatable.class.getName() } };
-            NfcAdapter nfcAdpt = NfcAdapter.getDefaultAdapter(this);
-            nfcAdpt.enableForegroundDispatch(this, pendingIntent, intentFiltersArray, techList);
-        }
-        catch(NFCManager.NFCNotSupported nfcnsup) {
-            Snackbar.make(v, "NFC not supported", Snackbar.LENGTH_LONG).show();
-            NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-            Menu nav_Menu = navigationView.getMenu();
-//            nav_Menu.findItem(R.id.nav_addAler).setVisible(false);
-//            nav_Menu.findItem(R.id.nav_nfcWrite).setVidisible(false);
-            nav_Menu.findItem(R.id.nav_nfc_menu).setVisible(false);
-        }
-        catch(NFCManager.NFCNotEnabled nfcnEn) {
-            Snackbar.make(v, "NFC Not enabled", Snackbar.LENGTH_LONG).show();
-        }
-
+    protected void onStop() {
+        super.onStop();
+        show = true;
     }
-
 
     @Override
     protected void onPause() {
         super.onPause();
-        //nfcMger.disableDispatch();
+    }
+
+    private ViewPager mViewPager;
+    BottomNavigationView navigation;
+
+    private void read() {
+        try {
+            UserList u = UserList.getInstance();
+            if (UserList.getInstance().getActiveUser() != null) {
+                return;
+            }
+            File f = new File("UserList.allr");
+            byte[] data = new byte[(int) f.length()];
+            new FileInputStream(f).read(data);
+            String s = new String(data, "UTF-8");
+            u.add(s, getApplicationContext());
+        } catch (IOException i) {
+            i.printStackTrace();
+            return;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        dialog = new ProgressDialog(getApplicationContext());
+        nfcMger = new NFCManager(this);
+        v = findViewById(R.id.content);
+        read();
+
+        super.onCreate(savedInstanceState);
+        if (UserList.getInstance().getActiveUser() == null) {
+            getSupportActionBar().hide();
+            startActivity(new Intent(this, IntroActivity.class));
+        } else {
+            getSupportActionBar().show();
+            setContentView(R.layout.activity_second_main);
+            show = false;
+            Bundle arguments = new Bundle();
+            arguments.putString(DetailFragment.ARG_ITEM_ID, UserList.getInstance()
+                    .getActiveUser().getName());
+            DetailFragment df = new DetailFragment();
+            df.setArguments(arguments);
+            System.out.println(show);
+            this.replaceFragment(df);
+            navigation = (BottomNavigationView) findViewById(R.id.navigation);
+            navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+            navigation.setSelectedItemId(R.id.navigation_dashboard);
+            switch (NFCSTATUS) {
+                case 0:
+                    break;
+                case NFC_NOT_SUPPORTED:
+                    Snackbar.make(getWindow().getDecorView(), "NFC is not supported on your phone", Snackbar.LENGTH_LONG).show();
+                    break;
+                case NFC_NOT_ENABLED:
+                    Snackbar.make(getWindow().getDecorView(), "NFC is not enabled", Snackbar.LENGTH_LONG).show();
+                    break;
+            }
+
+        }
     }
 
     /**
-     * getting the nfc intent and writing if there is message to write or reading if there is no message to write
-     * @param intent get it automatic
+     * replace fragment function
+     *
+     * @param fragment fragment object to change to
      */
+    @Override
+    public void replaceFragment(Fragment fragment) {
+        //FragmentManager fragmentManager = getSupportFragmentManager();;
+        //FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction()
+                .replace(R.id.content, fragment, null);
+        ft.detach(fragment);
+        ft.attach(fragment);
+        ft.commit();
+    }
+
+    public static void rewrite() {
+        try {
+            FileOutputStream fileOut = new FileOutputStream("UserList.allr");
+            fileOut.write(UserList.getInstance().getActiveUser().getByteCode());
+            fileOut.close();
+        } catch (IOException i) {
+            i.printStackTrace();
+        }
+    }
+
     @Override
     public void onNewIntent(Intent intent) {
         Log.d("Nfc", "New intent");
@@ -161,12 +196,15 @@ public class MainActivity extends AppCompatActivity
         currentTag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
         if (message != null) {
             nfcMger.writeTag(currentTag, message);
-            if(dialog.isShowing()){
+            if (dialog.isShowing()) {
                 dialog.dismiss();
             }
-            Snackbar.make(v, "Tag written", Snackbar.LENGTH_LONG).show();
-            message=null;
-        }else{
+            DetailFragment detailfragment = new DetailFragment();
+            this.replaceFragment(detailfragment);
+            navigation.setSelectedItemId(R.id.navigation_dashboard);
+            Snackbar.make(getWindow().getDecorView(), "Tag written", Snackbar.LENGTH_LONG).show();
+            message = null;
+        } else {
             Ndef ndef = Ndef.get(currentTag);
             if (ndef == null) {
                 // NDEF is not supported by this Tag.
@@ -180,34 +218,30 @@ public class MainActivity extends AppCompatActivity
                 if (ndefRecord.getTnf() == NdefRecord.TNF_WELL_KNOWN && Arrays.equals(ndefRecord.getType(), NdefRecord.RTD_TEXT)) {
                     try {
                         //Snackbar.make(v, readText(ndefRecord), Snackbar.LENGTH_LONG).show();
-                        String user= readText(ndefRecord);
+                        String user = readText(ndefRecord);
                         UserList.getInstance().add(user, getApplicationContext());
-                        MainScreenFragment msf = new MainScreenFragment();
-                        this.replaceFragment(msf);
-                        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-                        Menu nav_Menu = navigationView.getMenu();
-                        nav_Menu.findItem(R.id.nav_EditUser).setVisible(true);
-                        nav_Menu.findItem(R.id.nav_addAler).setVisible(true);
-                        nav_Menu.findItem(R.id.nav_nfcWrite).setVisible(true);
-                       // msf.refresh();
+                        DetailFragment detailfragment = new DetailFragment();
+                        this.replaceFragment(detailfragment);
+                        navigation.setSelectedItemId(R.id.navigation_dashboard);
+                        // msf.refresh();
+                        rewrite();
                     } catch (UnsupportedEncodingException e) {
                         Log.e("TAG", "Unsupported Encoding", e);
                     }
                 }
             }
-            if(dialog.isShowing()){
+            if (dialog.isShowing()) {
                 dialog.dismiss();
+                Snackbar.make(getWindow().getDecorView(), "Tag read", Snackbar.LENGTH_LONG).show();
+                rewrite();
+            } else {
+                Snackbar.make(getWindow().getDecorView(), "Tag read", Snackbar.LENGTH_LONG).show();
+                rewrite();
             }
-            Snackbar.make(v, "Tag read", Snackbar.LENGTH_LONG).show();
+
         }
     }
 
-    /**
-     * read the text out of the ndef record to a string
-     * @param record ndef record
-     * @return string content of record
-     * @throws UnsupportedEncodingException
-     */
     private String readText(NdefRecord record) throws UnsupportedEncodingException {
         /*
          * See NFC forum specification for "Text Record Type Definition" at 3.2.1
@@ -234,148 +268,42 @@ public class MainActivity extends AppCompatActivity
         return new String(payload, languageCodeLength + 1, payload.length - languageCodeLength - 1, textEncoding);
     }
 
-    /**
-     * reading the userlist file to import all users
-     */
-    private void read(){
+    @Override
+    protected void onResume() {
+        super.onResume();
+
         try {
-            UserList u = UserList.getInstance();
-            if (u.size() > 0) {
-                return;
-            }
-            FileInputStream fileIn = openFileInput("UserList.ser");
-            ObjectInputStream in = new ObjectInputStream(fileIn);
-            ArrayList<User> alu = (ArrayList<User>) in.readObject();
-            for (int i = 0; i < alu.size(); i++) {
-                u.add(alu.get(i));
-            }
-            if(u.size() >0) {
-                u.setActiveUserInPosition(0);
-            }
-            in.close();
-            fileIn.close();
-        }catch(IOException i) {
-            i.printStackTrace();
-            return;
-        }catch(ClassNotFoundException c) {
-            System.out.println("UserList class not found");
-            c.printStackTrace();
-            return;
-        }
-    }
+            nfcMger.verifyNFC();
+            //nfcMger.enableDispatch();
 
-    /**
-     * set the version code in the navBar
-     */
-    private void setVersionCodeInTV() {
-        try {
-            String s = getApplicationContext().getPackageManager().getPackageInfo(getApplicationContext()
-                    .getPackageName(), 0).versionName;
-            tvVersion.setText(s);
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
-    }
-
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+            Intent nfcIntent = new Intent(this, getClass());
+            nfcIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, nfcIntent, 0);
+            IntentFilter[] intentFiltersArray = new IntentFilter[]{};
+            String[][] techList = new String[][]{{android.nfc.tech.Ndef.class.getName()},
+                    {android.nfc.tech.NdefFormatable.class.getName()}};
+            NfcAdapter nfcAdpt = NfcAdapter.getDefaultAdapter(this);
+            nfcAdpt.enableForegroundDispatch(this, pendingIntent, intentFiltersArray, techList);
+        } catch (NFCManager.NFCNotSupported nfcnsup) {
+            View rootView = null;
+            View currentFocus = getWindow().getCurrentFocus();
+            if (currentFocus != null)
+                rootView = currentFocus.getRootView();
+            //   Snackbar.make(rootView, "NFC not supported", Snackbar.LENGTH_LONG).show();
+            NFCSTATUS = NFC_NOT_SUPPORTED;
+        } catch (NFCManager.NFCNotEnabled nfcnEn) {
+            View rootView = null;
+            View currentFocus = getWindow().getCurrentFocus();
+            if (currentFocus != null)
+                rootView = currentFocus.getRootView();
+            //   Snackbar.make(rootView, "NFC Not enabled", Snackbar.LENGTH_LONG).show();
+            NFCSTATUS = NFC_NOT_ENABLED;
         }
 
-        return super.onOptionsItemSelected(item);
-    }
-    MainScreenFragment msf = new MainScreenFragment();
-    NewUserFragment nuf = new NewUserFragment();
-    EditUserFragment euf = new EditUserFragment();
-    AddAlergyFragment aaf = new AddAlergyFragment();
-
-    /**
-     * getting witch button you pressed in the nav bar and inflating the fragment
-     * @param item get automatic
-     * @return true\false
-     */
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
-        if (id == R.id.nav_newUser) {
-            nuf = new NewUserFragment();
-            this.replaceFragment(nuf);
-        }else if (id == R.id.nav_home) {
-            msf = new MainScreenFragment();
-            this.replaceFragment(msf);
-        }else if (id == R.id.nav_EditUser){
-            euf = new EditUserFragment();
-            this.replaceFragment(euf);
-        }else if (id == R.id.nav_addAler){
-            aaf = new AddAlergyFragment();
-            this.replaceFragment(aaf);
-        }else if( id == R.id.nav_nfcWrite){
-            onNFCwrite();
-        }else if( id == R.id.nav_nfcRead){
-            onNFCRead();
-        } else if (id == R.id.nav_TestView) {
-            startActivity(new Intent(this, SecondMainActivity.class));
-        }
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
     }
 
-    /**
-     * when you press NFC write button this function is called ( make the massege to write and activate dialog)
-     */
-    private void onNFCwrite() {
-        message =  nfcMger.createTextMessage(UserList.getInstance().getActiveUser().getByteCode());
-        if (message != null) {
-            dialog.setMessage("Tag NFC Tag please");
-            dialog.show();
-        }
-    }
-    /**
-     * when you press NFC read button this function is called ( make the massege to null and activate dialog)
-     */
-    private void onNFCRead(){
-        message =null;
-        dialog = new ProgressDialog(MainActivity.this);
+    public static void ReadNFC() {
         dialog.setMessage("Tag NFC Tag please");
         dialog.show();
     }
-
-    /**
-     * replace fragment function
-     * @param fragment fragment object to change to
-     */
-    @Override
-    public void replaceFragment(Fragment fragment) {
-        //FragmentManager fragmentManager = getSupportFragmentManager();;
-        //FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-
-        FragmentTransaction ft=getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit)
-                .replace(R.id.fragment_cointainer, fragment, null);
-        ft.detach(fragment);
-        ft.attach(fragment);
-        ft.commit();
-    }
 }
-

@@ -94,12 +94,20 @@ public class User implements java.io.Serializable {
         return ala.size();
     }
 
+    public ArrayList<Allergy> getAla() {
+        return ala;
+    }
+
     /**
      * delete user allergy
      * @param position the index in the ArrayList of the allergy
      */
     public void remAllergy(int position){
         ala.remove(position);
+    }
+
+    public void remAllergy(Allergy a) {
+        ala.remove(a);
     }
 
     /**
@@ -138,4 +146,6 @@ public class User implements java.io.Serializable {
         }
         return null;
     }
+
+
 }
