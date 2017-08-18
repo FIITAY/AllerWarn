@@ -12,6 +12,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
+import com.facebook.Profile;
+
 import java.util.ArrayList;
 
 import itay.finci.org.allerwarn.MainActivity;
@@ -42,8 +44,13 @@ public class DetailFragment extends Fragment {
         if (u != null) {
 
             tvTitle = (TextView) rootView.findViewById(R.id.title);
-            tvTitle.setText(u.getName() + " " + u.getlName());
 
+
+            if (Profile.getCurrentProfile() != null) {
+                tvTitle.setText(Profile.getCurrentProfile().getFirstName() + " " + Profile.getCurrentProfile().getLastName());
+            } else {
+                tvTitle.setText(u.getName() + " " + u.getlName());
+            }
 
             setButtonsListiners(rootView);
 

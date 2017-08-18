@@ -12,8 +12,8 @@ import android.nfc.Tag;
 import android.nfc.tech.Ndef;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.View;
 
@@ -28,7 +28,7 @@ import itay.finci.org.allerwarn.NFC.NFCManager;
 import itay.finci.org.allerwarn.R;
 import itay.finci.org.allerwarn.user.UserList;
 
-public class IntroActivity extends ActionBarActivity {
+public class IntroActivity extends FragmentActivity {
 
     private ViewPager mViewPager;
 

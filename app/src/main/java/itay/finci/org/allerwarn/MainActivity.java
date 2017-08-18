@@ -21,6 +21,9 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.facebook.FacebookSdk;
+import com.facebook.appevents.AppEventsLogger;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -129,8 +132,9 @@ public class MainActivity extends AppCompatActivity
         nfcMger = new NFCManager(this);
         v = findViewById(R.id.content);
         read();
-
         super.onCreate(savedInstanceState);
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        AppEventsLogger.activateApp(this);
         if (UserList.getInstance().getActiveUser() == null) {
             getSupportActionBar().hide();
             startActivity(new Intent(this, IntroActivity.class));

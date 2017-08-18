@@ -41,11 +41,22 @@ android {
     defaultConfig {
         applicationId "itay.finci.org.allerwarn"
         minSdkVersion 16
-        targetSdkVersion 24
+        targetSdkVersion 25
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
+    signingConfigs {
+        key {
+            keyAlias 'goggle dev itay.finci.org'
+            keyPassword 'krevMem2^'
+            storeFile file('keystore.jks')
+            storePassword 'krevMem2^'
+        }
+    }
     buildTypes {
+        debug {
+            signingConfig signingConfigs.key
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -58,15 +69,15 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:cardview-v7:24.2.1'
     compile 'com.android.support:recyclerview-v7:24.2.1'
     compile 'com.android.support:appcompat-v7:24.2.1'
-    compile 'com.android.support:design:26.0.0-alpha1'
+    compile 'com.android.support:design:25.3.1'
     compile 'com.android.support:support-v4:24.2.1'
     compile 'com.google.android.gms:play-services-vision:9.6.1'
     compile 'org.apache.commons:commons-lang3:3.6'
     compile 'com.android.support:support-vector-drawable:24.2.1'
     compile 'com.android.support:support-annotations:23.3.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    compile 'com.facebook.android:facebook-android-sdk:[4,5)'
     testCompile 'junit:junit:4.12'
 }

@@ -17,4 +17,8 @@
     <string name="title">title</string>
     <string name="description">description</string>
 
+    <string name="facebook_app_id">110481889637301</string>
+    <string name="fb_login_protocol_scheme">fb110481889637301</string>
+
+
 </resources>

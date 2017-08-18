@@ -12,9 +12,18 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.Profile;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
+
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.util.Arrays;
 
 import itay.finci.org.allerwarn.MainActivity;
 import itay.finci.org.allerwarn.R;
@@ -36,6 +45,7 @@ public class IntroFragment extends Fragment {
     private final static int TWO_FILDS_SAME = 4;
 
     private int mBackgroundColor, mPage;
+    CallbackManager callbackManager;
 
     public static IntroFragment newInstance(int backgroundColor, int page) {
         IntroFragment frag = new IntroFragment();
@@ -61,7 +71,6 @@ public class IntroFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
         // Select a layout based on the current page
         int layoutResId;
         switch (mPage) {
@@ -77,14 +86,94 @@ public class IntroFragment extends Fragment {
 
         // Set the current page index as the View's tag (useful in the PageTransformer)
         view.setTag(mPage);
+        callbackManager = CallbackManager.Factory.create();
+        LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile"));
+        LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                String name = Profile.getCurrentProfile().getFirstName();
+                String lname = Profile.getCurrentProfile().getLastName();
+                UserList.getInstance().setActiveUser(new User(name, lname));
+                startActivity(new Intent(getActivity(), MainActivity.class));
+            }
+
+            @Override
+            public void onCancel() {
+
+            }
+
+            @Override
+            public void onError(FacebookException error) {
+                error.printStackTrace();
+            }
+        });
 
         if (layoutResId == R.layout.intro_fragment_layout_2) {
             buttons(view);
+            LoginButton loginButton = (LoginButton) view.findViewById(R.id.login_button);
+            loginButton.setReadPermissions("public_profile");
+            // If using in a fragment
+            loginButton.setFragment(this);
+            // Other app specific specialization
+
+            // Callback registration
+            loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+                @Override
+                public void onSuccess(LoginResult loginResult) {
+                    String name = Profile.getCurrentProfile().getFirstName();
+                    String lname = Profile.getCurrentProfile().getLastName();
+                    UserList.getInstance().setActiveUser(new User(name, lname));
+                    startActivity(new Intent(getActivity(), MainActivity.class));
+                }
+
+                @Override
+                public void onCancel() {
+                    // App code
+                }
+
+                @Override
+                public void onError(FacebookException exception) {
+                    exception.printStackTrace();
+                }
+            });
+        } else {
+            LoginButton loginButton = (LoginButton) view.findViewById(R.id.login_button);
+            loginButton.setReadPermissions("email");
+            loginButton.setReadPermissions("public_profile");
+            // If using in a fragment
+            loginButton.setFragment(this);
+            // Other app specific specialization
+
+            // Callback registration
+            loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+                @Override
+                public void onSuccess(LoginResult loginResult) {
+                    String name = Profile.getCurrentProfile().getFirstName();
+                    String lname = Profile.getCurrentProfile().getLastName();
+                    UserList.getInstance().setActiveUser(new User(name, lname));
+                    startActivity(new Intent(getActivity(), MainActivity.class));
+                }
+
+                @Override
+                public void onCancel() {
+                    // App code
+                }
+
+                @Override
+                public void onError(FacebookException exception) {
+                    exception.printStackTrace();
+                }
+            });
         }
 
         return view;
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        callbackManager.onActivityResult(requestCode, resultCode, data);
+    }
 
     private void buttons(final View view) {
         Button btDone = (Button) view.findViewById(R.id.btDone);
