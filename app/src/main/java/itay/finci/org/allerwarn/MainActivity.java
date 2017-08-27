@@ -75,9 +75,11 @@ public class MainActivity extends AppCompatActivity
                             break;
                         case NFC_NOT_SUPPORTED:
                             Snackbar.make(getWindow().getDecorView(), "NFC is not supported on your phone", Snackbar.LENGTH_LONG).show();
+                            navigation.setSelectedItemId(R.id.navigation_dashboard);
                             break;
                         case NFC_NOT_ENABLED:
                             Snackbar.make(getWindow().getDecorView(), "NFC is not enabled", Snackbar.LENGTH_LONG).show();
+                            navigation.setSelectedItemId(R.id.navigation_dashboard);
                             break;
                     }
                     return true;

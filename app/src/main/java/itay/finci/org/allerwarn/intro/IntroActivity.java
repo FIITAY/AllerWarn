@@ -74,19 +74,22 @@ public class IntroActivity extends FragmentActivity {
         for (NdefRecord ndefRecord : records) {
             if (ndefRecord.getTnf() == NdefRecord.TNF_WELL_KNOWN && Arrays.equals(ndefRecord.getType(), NdefRecord.RTD_TEXT)) {
                 try {
+                    //Snackbar.make(v, readText(ndefRecord), Snackbar.LENGTH_LONG).show();
                     String user = readText(ndefRecord);
                     UserList.getInstance().add(user, getApplicationContext());
-                    rewrite();
                     startActivity(new Intent(this, MainActivity.class));
-
+                    // msf.refresh();
+                    rewrite();
                 } catch (UnsupportedEncodingException e) {
                     Log.e("TAG", "Unsupported Encoding", e);
                 }
             }
         }
         Snackbar.make(getWindow().getDecorView(), "Tag read", Snackbar.LENGTH_LONG).show();
+        rewrite();
 
     }
+
 
     @Override
     protected void onResume() {

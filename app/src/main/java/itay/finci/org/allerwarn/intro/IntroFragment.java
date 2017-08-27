@@ -16,14 +16,12 @@ import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.Profile;
-import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.util.Arrays;
 
 import itay.finci.org.allerwarn.MainActivity;
 import itay.finci.org.allerwarn.R;
@@ -87,27 +85,12 @@ public class IntroFragment extends Fragment {
         // Set the current page index as the View's tag (useful in the PageTransformer)
         view.setTag(mPage);
         callbackManager = CallbackManager.Factory.create();
-        LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile"));
-        LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
-            @Override
-            public void onSuccess(LoginResult loginResult) {
-                String name = Profile.getCurrentProfile().getFirstName();
-                String lname = Profile.getCurrentProfile().getLastName();
-                UserList.getInstance().setActiveUser(new User(name, lname));
-                startActivity(new Intent(getActivity(), MainActivity.class));
-            }
-
-            @Override
-            public void onCancel() {
-
-            }
-
-            @Override
-            public void onError(FacebookException error) {
-                error.printStackTrace();
-            }
-        });
-
+        if (Profile.getCurrentProfile() != null) {
+            String name = Profile.getCurrentProfile().getFirstName();
+            String lname = Profile.getCurrentProfile().getLastName();
+            UserList.getInstance().setActiveUser(new User(name, lname));
+            startActivity(new Intent(getActivity(), MainActivity.class));
+        }
         if (layoutResId == R.layout.intro_fragment_layout_2) {
             buttons(view);
             LoginButton loginButton = (LoginButton) view.findViewById(R.id.login_button);
